@@ -1,0 +1,349 @@
+<th:block th:fragment="modalProductDetail">
+    <!-- Modal Start-->
+    <div class="modal fade" id="modalPro" tabindex="-1" aria-labelledby="createCustomerModalLabel"
+         data-bs-dismiss="modal" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCustomerModalLabel">Product Cart Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="frmProduct">
+                        <div class="row mb-3 mt-3">
+                            <div class="col-lg-6">
+                                <div class="product-img position-relative overflow-hidden">
+                                    <img class="img-fluid w-100" src="" alt="" id="imagePr">
+                                    <div class="product-action">
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-shopping-cart"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="far fa-heart"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-sync-alt"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-search"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="h-100 bg-light p-30">
+                                    <h3 id="namePr"></h3>
+                                    <div class="d-flex mb-3">
+                                        <div class="text-primary mr-2">
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star-half-alt"></small>
+                                            <small class="far fa-star"></small>
+                                        </div>
+                                        <small class="pt-1" id="viewsPr">(99 Reviews)</small>
+                                    </div>
+                                    <h3 class="font-weight-semi-bold mb-4" id="pricePr"></h3>
+                                    <p class="mb-4" id="descriptionPr"></p>
+                                    <div class="d-flex mb-3">
+                                        <strong class="text-dark mr-3">Sizes:</strong>
+                                        <form>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="size-p1"
+                                                       name="size">
+                                                <label class="custom-control-label" for="size-p1">XS</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="size-p2"
+                                                       name="size">
+                                                <label class="custom-control-label" for="size-p2">S</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="size-p3"
+                                                       name="size">
+                                                <label class="custom-control-label" for="size-p3">M</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="size-p4"
+                                                       name="size">
+                                                <label class="custom-control-label" for="size-p4">L</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="size-p5"
+                                                       name="size">
+                                                <label class="custom-control-label" for="size-p5">XL</label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="d-flex mb-4">
+                                        <strong class="text-dark mr-3">Colors:</strong>
+                                        <form>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="color-p1"
+                                                       name="color">
+                                                <label class="custom-control-label" for="color-p1">Black</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="color-p2"
+                                                       name="color">
+                                                <label class="custom-control-label" for="color-p2">White</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="color-p3"
+                                                       name="color">
+                                                <label class="custom-control-label" for="color-p3">Red</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="color-p4"
+                                                       name="color">
+                                                <label class="custom-control-label" for="color-p4">Blue</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="color-p5"
+                                                       name="color">
+                                                <label class="custom-control-label" for="color-p5">Green</label>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="d-flex mb-3">
+                                        <h1 id="totalAmount"></h1>
+                                    </div>
+
+                                    <div class="d-flex align-items-center mb-4 pt-2">
+                                        <div class="input-group quantity mr-3" style="width: 130px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-primary btn-minus" type="button">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text"
+                                                   class="form-control bg-secondary border-0 text-center amountClothes"
+                                                   readonly
+                                                   value="1">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-primary btn-plus" type="button">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary px-3" id="btnProduct" type="button"><i
+                                                class="fa fa-shopping-cart mr-1"></i>
+                                            Add To
+                                            Cart
+                                        </button>
+                                    </div>
+                                    <div class="d-flex pt-2">
+                                        <strong class="text-dark mr-2">Share on:</strong>
+                                        <div class="d-inline-flex">
+                                            <a class="text-dark px-2" href="">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                            <a class="text-dark px-2" href="">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                            <a class="text-dark px-2" href="">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                            <a class="text-dark px-2" href="">
+                                                <i class="fab fa-pinterest"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal  End-->
+</th:block>
+
+<th:block th:fragment="modalCart">
+    <div class="modal fade" id="modalCart" tabindex="-1" aria-labelledby="productCart"
+         data-bs-dismiss="modal" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productCart">Product Cart Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row modal-body">
+                    <div class="col-lg-8 table-responsive mb-5">
+                        <table class="table table-light table-borderless table-hover text-center mb-0">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Products</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                            <tr>
+                                <td class="align-middle"><img src="/img/product-1.jpg" alt="" style="width: 50px;">
+                                    Product Name
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text"
+                                               class="form-control form-control-sm bg-secondary border-0 text-center"
+                                               value="1">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img src="/img/product-2.jpg" alt="" style="width: 50px;">
+                                    Product Name
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text"
+                                               class="form-control form-control-sm bg-secondary border-0 text-center"
+                                               value="1">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img src="/img/product-3.jpg" alt="" style="width: 50px;">
+                                    Product Name
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text"
+                                               class="form-control form-control-sm bg-secondary border-0 text-center"
+                                               value="1">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img src="/img/product-4.jpg" alt="" style="width: 50px;">
+                                    Product Name
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text"
+                                               class="form-control form-control-sm bg-secondary border-0 text-center"
+                                               value="1">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle"><img src="/img/product-5.jpg" alt="" style="width: 50px;">
+                                    Product Name
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text"
+                                               class="form-control form-control-sm bg-secondary border-0 text-center"
+                                               value="1">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">$150</td>
+                                <td class="align-middle">
+                                    <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-4">
+                        <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span>
+                        </h5>
+                        <div class="bg-light p-30 mb-5">
+                            <div class="border-bottom pb-2">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h6>Subtotal</h6>
+                                    <h6>$150</h6>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="font-weight-medium">Shipping</h6>
+                                    <h6 class="font-weight-medium">$10</h6>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <div class="d-flex justify-content-between mt-2">
+                                    <h5>Total</h5>
+                                    <h5>$160</h5>
+                                </div>
+                                <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To
+                                    Checkout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
