@@ -2,7 +2,6 @@ package com.cg.model;
 
 
 import com.cg.model.dto.ImageResDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
