@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <th:block th:replace="~{/layout/head::head}"></th:block>
@@ -793,10 +793,16 @@
     <!-- Footer Start -->
     <th:block th:replace="~{layout/footer-scrip::footer}"></th:block>
     <!-- Footer End -->
-
+    <!--Modal Cart-->
+    <th:block th:replace="~{/modalCartProduct::modalCart}"></th:block>
+    <!--Modal Cart end-->
 
     <!-- Scrip -->
     <th:block th:replace="~{layout/footer-scrip::scrip}"></th:block>
+
+    <script src="/js/appUtils.js"></script>
+
+    <script src="/js/modalMain.js"></script>
 </body>
 
 </html>

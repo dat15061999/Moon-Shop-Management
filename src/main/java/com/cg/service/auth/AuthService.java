@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -52,7 +53,9 @@ public class AuthService implements UserDetailsService {
         return check;
     }
 
-
+    public Optional<Customer> getCustomerByName(String name){
+        return userRepository.getCustomerByName(name);
+    };
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer user = userRepository.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username,username,username)

@@ -43,7 +43,7 @@ page.elements.renderCartOnCheckout = $('.renderCarts');
 
 
 
-let customerID = 1;
+let customerID = $('#customerID').val();
 
 let productID = 0;
 
@@ -183,9 +183,7 @@ page.commands.handleClickButtonSearch = (productID) => {
 // Modal cart detail
 page.elements.btnOpenCart.on('click', async () => {
 
-    const customerID = 1;
-
-    await page.commands.renderListProductsToCart(customerID);
+    await page.commands.renderListProductsToCart();
 
     page.commands.amountProsOnCart();
 
@@ -234,13 +232,13 @@ page.commands.renderCartToBill= (item)=> {
     ;
 }
 
-page.commands.renderListProductsToCart = async (customerId)=> {
+page.commands.renderListProductsToCart = async ()=> {
     page.elements.renderListCart.empty();
 
     let amount = 0;
 
     const listCart = await $.ajax({
-        url: page.url.getAllCartList + customerId,
+        url: page.url.getAllCartList + customerID,
         method: "GET"
     });
 
@@ -282,7 +280,6 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
 // Add product to cart
 page.elements.btnAddProductToCart.on('click', async () => {
 
-    const idCustomer = 1;
 
     const idProduct = page.elements.idProduct.val()
 
@@ -296,20 +293,20 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     const data = {
         idProduct,
-        idCustomer,
+        customerID,
         sizePro: size,
         colorPro: color,
         amount: amountIn,
         totalAmount
     }
 
-    await page.commands.addCart(data, idCustomer);
+    await page.commands.addCart(data, customerID);
 
     page.commands.removeAllSizeOrColor(page.elements.getSize);
 
     page.commands.removeAllSizeOrColor(page.elements.getColor);
 
-    await page.commands.countCartDetailByCustomerID(idCustomer)
+    await page.commands.countCartDetailByCustomerID(customerID)
 
     page.elements.modalProductDetail.modal('hide');
 
@@ -319,16 +316,16 @@ page.elements.btnAddProductToCart.on('click', async () => {
 })
 
 // add cart
-page.commands.addCart = async (data, idCustomer) => {
+page.commands.addCart = async (data) => {
     await $.ajax({
-        url: page.url.addProductToCart + idCustomer,
+        url: page.url.addProductToCart + customerID,
         contentType: "application/json",
         data: JSON.stringify(data),
         method: "POST"
     })
 }
 
-page.commands.countCartDetailByCustomerID = async (customerID) =>{
+page.commands.countCartDetailByCustomerID = async () =>{
     const count = await $.ajax({
         url: page.url.countCartDetails + customerID
     })
@@ -364,5 +361,5 @@ page.commands.removeAllSizeOrColor = (item) => {
 $(async () => {
     await page.commands.getAllProduct();
     await page.commands.handleClick();
-    await page.commands.countCartDetailByCustomerID(customerID)
+    await page.commands.countCartDetailByCustomerID()
 })

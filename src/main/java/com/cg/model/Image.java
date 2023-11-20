@@ -20,24 +20,9 @@ import org.hibernate.annotations.GenericGenerator;
 public class Image {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
-
-    @Column(name = "file_name")
-    private String fileName;
-
-    @Column(name = "file_folder")
-    private String fileFolder;
-
-    @Column(name = "file_url")
     private String url;
-
-    @Column(name = "file_type")
-    private String fileType;
-
-    @Column(name = "cloud_id")
-    private String cloudId;
 
     @ManyToOne
     @JsonIgnore

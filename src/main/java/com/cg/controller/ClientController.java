@@ -1,9 +1,11 @@
 package com.cg.controller;
 
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,9 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class ClientController {
 
     @GetMapping("index")
-    public ModelAndView index() {
+    public ModelAndView index(@ModelAttribute("idCustomer") Long id) {
         ModelAndView view = new ModelAndView("index");
-
+        view.addObject("customerID",id);
         return view;
     }
     @GetMapping("about")
