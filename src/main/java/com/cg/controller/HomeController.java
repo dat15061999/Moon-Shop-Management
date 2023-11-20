@@ -20,20 +20,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class HomeController {
     private final UserService userService;
-    @GetMapping("")
-    public ModelAndView index(HttpSession session) {
-        ModelAndView view = new ModelAndView("index");
-        Long id = (Long) session.getAttribute("idCustomer");
-        view.addObject("customerID", id);
-        return view;
-    }
 //    @GetMapping("")
-//    public ModelAndView getHome() {
-//        modelAndView.setViewName("index");
-//        ModelAndView modelAndView = Login();
-//        modelAndView.addObject("someKey", "someValue");
-//        return modelAndView;
+//    public ModelAndView index(HttpSession session) {
+//        ModelAndView view = new ModelAndView("index");
+//        Long id = (Long) session.getAttribute("idCustomer");
+//        view.addObject("customerID", id);
+//        return view;
 //    }
+    @GetMapping("")
+    public ModelAndView getHome() {
+        modelAndView.setViewName("index");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
     @GetMapping("/shop")
     public ModelAndView showShop(HttpSession session){
         ModelAndView view = new ModelAndView("shop");

@@ -33,6 +33,14 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index","/assets/**" ,"/myjs/**", "/cdn-cgi/**", "/error/**").permitAll()
+                                .requestMatchers("/home").permitAll()
+                                .requestMatchers("/bill").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/").permitAll()
+                                .requestMatchers("/lib/**").permitAll()
+                                .requestMatchers("/img/**").permitAll()
+                                .requestMatchers("/js/**").permitAll()
+                                .requestMatchers("/css/**").permitAll()
                                 .anyRequest().authenticated()
                 ).formLogin(
                         form -> form
