@@ -2,8 +2,10 @@ const page = {
     url: {
         getAllProducts: AppUtils.BASE_PRODUCT_API,
         getProductById: AppUtils.BASE_PRODUCT_API + "/",
-        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API+ "/",
-        getAllCartList: AppUtils.BASE_All_CARTS_API + "/"
+        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API + "/",
+        getAllCartList: AppUtils.BASE_All_CARTS_API + "/",
+        deleteProductFromCart: AppUtils.BASE_DELETE_PRODUCT_FROM_CART_API,
+        countCartDetails: AppUtils.BASE_COUNT_CART_API
     },
     elements: {},
     loadData: {},
@@ -35,6 +37,13 @@ page.elements.renderListCart = $('.renderCart');
 page.elements.modalCart = $('#modalCart');
 page.elements.plusCart = $('.btn-plus-cart');
 page.elements.minusCart = $('.btn-minus-cart');
+page.elements.countCartDetails = $('#show-count-cart-detail');
+page.elements.btnDeleteProFromCart = $('button.btn-delete');
+page.elements.renderCartOnCheckout = $('.renderCarts');
+
+
+
+let customerID = 1;
 
 let productID = 0;
 
@@ -109,15 +118,15 @@ page.commands.changeClickPlusOrMinus = () => {
     page.elements.totalAmount.text(newPrice + "$");
 }
 
-page.commands.handleClick = () => {
+page.commands.handleClick = async () => {
     $('button.search').on('click', function () {
         productID = $(this).attr('id').replace('tr_', '');
 
         page.commands.handleClickButtonSearch(productID);
     })
-
-
 }
+
+
 //Render list Cart
 page.commands.renderCart = (obj) => {
     return `
@@ -143,13 +152,13 @@ page.commands.renderCart = (obj) => {
                      </div>
                  </div>
              </td>
-             <td class="align-middle">${obj.totalAmount}$</td>
+             <td class="align-middle totalAmountProduct">${obj.totalAmount}$</td>
              <td class="align-middle">
-                 <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                 <button class="btn btn-sm btn-danger btn-delete-product" type="button"><i class="fa fa-times"></i></button>
              </td>
     </tr>
     `
-    ;
+        ;
 }
 
 // Modal product detail
@@ -173,22 +182,102 @@ page.commands.handleClickButtonSearch = (productID) => {
 
 // Modal cart detail
 page.elements.btnOpenCart.on('click', async () => {
-    page.elements.renderListCart.empty();
 
     const customerID = 1;
+
+    await page.commands.renderListProductsToCart(customerID);
+
+    page.commands.amountProsOnCart();
+
+})
+page.commands.amountProsOnCart = ()=> {
+    let amount = 0;
+
+    $('.totalAmountProduct').each(function() {
+        amount += parseFloat($(this).text().replace('$', ''));
+    });
+
+    $('#subtotal').text(amount+"$");
+    $('#total').text(amount+10+"$");
+
+}
+//render checkout
+page.commands.renderCartToBillCheckout = async ()=>{
+
+    const str = '<h6 class="mb-3">Products</h6>';
+
     const listCart = await $.ajax({
         url: page.url.getAllCartList + customerID,
-        method:"GET"
+        method: "GET"
+    });
+    page.elements.renderCartOnCheckout.prepend(str)
+
+    listCart.forEach(item => {
+        const str = page.commands.renderCartToBill(item);
+
+        page.elements.renderCartOnCheckout.prepend(str);
+
+    });
+
+    $('#subtotal').text();
+    $('#total').text();
+
+
+}
+page.commands.renderCartToBill= (item)=> {
+    return `
+     <div class="d-flex justify-content-between">
+         <p>${item.productName}</p>
+         <p>${item.amount}$</p>
+     </div>
+    `
+    ;
+}
+
+page.commands.renderListProductsToCart = async (customerId)=> {
+    page.elements.renderListCart.empty();
+
+    let amount = 0;
+
+    const listCart = await $.ajax({
+        url: page.url.getAllCartList + customerId,
+        method: "GET"
     });
 
     listCart.forEach(item => {
         const str = page.commands.renderCart(item);
 
         page.elements.renderListCart.prepend(str);
+
     });
 
+    await page.commands.handleClickBtnDelete();
+
+    page.commands.amountProsOnCart();
+
     page.elements.modalCart.modal('show');
-})
+}
+
+page.commands.handleClickBtnDelete = async () => {
+
+    $('.btn-delete-product').on('click', async function () {
+
+        const cartDetailID = $(this).closest('tr').attr('id').replace('cd_', '');
+
+        await page.commands.deleteProFromCart(cartDetailID);
+    })
+}
+
+page.commands.deleteProFromCart = async (cartDetailID) => {
+
+    await $.ajax({
+        url: page.url.deleteProductFromCart + cartDetailID}
+    )
+    await page.commands.countCartDetailByCustomerID(customerID)
+
+    await page.commands.renderListProductsToCart(1);
+}
+
 
 // Add product to cart
 page.elements.btnAddProductToCart.on('click', async () => {
@@ -209,16 +298,18 @@ page.elements.btnAddProductToCart.on('click', async () => {
         idProduct,
         idCustomer,
         sizePro: size,
-        colorPro : color,
+        colorPro: color,
         amount: amountIn,
         totalAmount
     }
 
-    await page.commands.addCart(data,idCustomer);
+    await page.commands.addCart(data, idCustomer);
 
     page.commands.removeAllSizeOrColor(page.elements.getSize);
 
     page.commands.removeAllSizeOrColor(page.elements.getColor);
+
+    await page.commands.countCartDetailByCustomerID(idCustomer)
 
     page.elements.modalProductDetail.modal('hide');
 
@@ -228,13 +319,20 @@ page.elements.btnAddProductToCart.on('click', async () => {
 })
 
 // add cart
-page.commands.addCart = async (data,idCustomer) => {
-    await $.ajax( {
+page.commands.addCart = async (data, idCustomer) => {
+    await $.ajax({
         url: page.url.addProductToCart + idCustomer,
         contentType: "application/json",
-        data:JSON.stringify(data),
+        data: JSON.stringify(data),
         method: "POST"
     })
+}
+
+page.commands.countCartDetailByCustomerID = async (customerID) =>{
+    const count = await $.ajax({
+        url: page.url.countCartDetails + customerID
+    })
+    page.elements.countCartDetails.text(count);
 }
 
 //get size or color product
@@ -265,5 +363,6 @@ page.commands.removeAllSizeOrColor = (item) => {
 
 $(async () => {
     await page.commands.getAllProduct();
-    page.commands.handleClick();
+    await page.commands.handleClick();
+    await page.commands.countCartDetailByCustomerID(customerID)
 })

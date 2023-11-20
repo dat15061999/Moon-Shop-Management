@@ -85,9 +85,25 @@ public class HomeAPI {
     }
     @GetMapping("/cart/{idCustomer}")
     public ResponseEntity<?> getCarts(@PathVariable Long idCustomer){
+
         List<CartDetailResDTO> cartDetails = cartService.getAllByCustomer_Id(idCustomer);
 
         return new ResponseEntity<>(cartDetails,HttpStatus.OK);
+    }
+
+    @GetMapping("delete/{idCartDetail}")
+    public ResponseEntity<?> deleteProductFromCart(@PathVariable Long idCartDetail){
+
+        cartService.deleteCartDetail(idCartDetail);
+
+        return new ResponseEntity<>("OK",HttpStatus.OK);
+    }
+    @GetMapping("/cartDetail/{idCustomer}")
+    public  ResponseEntity<?> getCountDetail(@PathVariable Long idCustomer){
+
+       Long countCartDetailByCustomer =  cartService.getCountDetail(idCustomer);
+
+       return new ResponseEntity<>(countCartDetailByCustomer,HttpStatus.OK);
     }
 
 }

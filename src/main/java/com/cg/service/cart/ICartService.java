@@ -18,4 +18,8 @@ public interface ICartService extends IGeneralService<Cart,Long> {
 
     void saveCartDetailIsExitWithProduct(CartDetail cartDetail);
 
+    void deleteCartDetail(Long idCartDetail);
+
+    long getCountDetail(Long idCustomer);
+
 }

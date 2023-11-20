@@ -56,4 +56,7 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
             "where " +
             "   cd.product.id = :idProduct")
     long existsByIdProduct(@Param("idProduct") Long idProduct);
+
+
+
 }

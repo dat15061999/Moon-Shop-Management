@@ -74,4 +74,14 @@ public class CartService implements ICartService{
 
         cartDetailRepository.save(newCartDetail);
     }
+
+    @Override
+    public void deleteCartDetail(Long idCartDetail) {
+        cartDetailRepository.deleteById(idCartDetail);
+    }
+
+    @Override
+    public long getCountDetail(Long idCustomer) {
+        return cartDetailRepository.getCount(idCustomer);
+    }
 }
