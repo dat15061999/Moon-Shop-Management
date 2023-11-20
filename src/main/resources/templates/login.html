@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/assets/login/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <style>
+        .half {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .contents {
+            position: absolute;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8); /* You can adjust the background color and opacity */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Adjust the width as needed */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+
+        .bg {
+            flex: 1;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+
+</head>
+<body>
+<div class="d-lg-flex half" style="
+    justify-content: center;
+">
+    <div class="bg order-1 order-md-2" style="background-image: url('/img/carousel-1.jpg');"></div>
+    <div class="contents order-2 order-md-1">
+
+        <div class="">
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Email, Mật khẩu không hợp lệ hoặc Tài khoản bị khóa .</div>
+            </div>
+            <div th:if="${param.logout}">
+                <script>
+                    window.onload = (event) => {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'You had logout success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                </script>
+            </div>
+            <div class="" >
+                <div class="col-md-7" style="margin-left: 129px">
+                    <h3>Login to <strong>MultiShop</strong></h3>
+                    <form method="post" role="form" th:action="@{/login}">
+                        <div class="form-group first">
+                            <label for="name">Username</label>
+                            <input type="text" class="form-control" placeholder="your-email@gmail.com" id="name"   name="username">
+                        </div>
+                        <div class="form-group last mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" placeholder="Your Password" id="password" name="password">
+                        </div>
+
+                        <div class="d-flex mb-5 align-items-center">
+                            <label class="control control--checkbox mb-0"><span class="caption">Remember me</span>
+                                <input type="checkbox" checked="checked"/>
+                                <div class="control__indicator"></div>
+                            </label>
+                            <span class="ml-auto"><a  href="/register" class="forgot-pass">Register/Signup</a></span>
+                        </div>
+
+                        <input type="submit" value="Log In" class="btn btn-block btn-primary">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

@@ -13,10 +13,10 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(chain = true)
 public class ImageResDTO {
-    private Long id;
+    private String id;
     private String url;
 
-    public ImageResDTO(Long id, String url) {
+    public ImageResDTO(String id, String url) {
         this.id = id;
         this.url = url;
     }

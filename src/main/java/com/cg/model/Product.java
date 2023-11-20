@@ -2,10 +2,10 @@ package com.cg.model;
 
 
 import com.cg.model.dto.ProductResDTO;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;

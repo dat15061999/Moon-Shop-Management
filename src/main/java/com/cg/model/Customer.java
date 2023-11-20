@@ -1,12 +1,16 @@
 package com.cg.model;
 
+import com.cg.model.enums.ELock;
+import com.cg.model.enums.ERole;
+import com.cg.model.enums.EStatusCustomer;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,8 +23,29 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
 
+    private String name;
+
+    private String email;
+
+    private String passWord;
+
+    private String phone;
+
+    private LocalDate dob;
+
+    private boolean deleted = false;
+
+    @Enumerated(EnumType.STRING)
+    private EStatusCustomer statusCustomer;
+
+
+    @Enumerated(EnumType.STRING)
+    private ELock eLock;
+
+
+    @Enumerated(value = EnumType.STRING)
+    private ERole role;
     public Customer(Long id) {
         this.id = id;
     }

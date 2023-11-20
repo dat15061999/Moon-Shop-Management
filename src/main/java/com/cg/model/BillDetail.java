@@ -1,12 +1,12 @@
 package com.cg.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class BillDetail {
     private Bill bill;
 
     @ManyToOne
-    @JoinColumn (name = "product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private int quantity;
