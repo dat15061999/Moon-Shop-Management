@@ -53,9 +53,15 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
             "   count(cd) " +
             "from " +
             "   CartDetail cd " +
+            "join " +
+            "   Cart c " +
+            "on " +
+            "   c.id=cd.cart.id " +
             "where " +
+            "   c.customer.id = :idCustomer  " +
+            "and " +
             "   cd.product.id = :idProduct")
-    long existsByIdProduct(@Param("idProduct") Long idProduct);
+    long existsByIdProduct(@Param("idProduct") Long idProduct,@Param("idCustomer") Long idCustomer);
 
 
 

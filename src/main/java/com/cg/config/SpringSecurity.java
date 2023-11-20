@@ -32,12 +32,12 @@ public class SpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index","/assets/**", "/" ,"/myjs/**", "/cdn-cgi/**", "/error/**").permitAll()
+                                .requestMatchers("/index","/assets/**" ,"/myjs/**", "/cdn-cgi/**", "/error/**").permitAll()
                                 .anyRequest().authenticated()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
-//                                .loginProcessingUrl("/login")
+                                .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/login-success")
                                 .permitAll()
                 ).logout(

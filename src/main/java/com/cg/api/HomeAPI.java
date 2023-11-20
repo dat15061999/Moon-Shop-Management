@@ -1,10 +1,7 @@
 package com.cg.api;
 
 
-import com.cg.model.Cart;
-import com.cg.model.CartDetail;
-import com.cg.model.Image;
-import com.cg.model.Product;
+import com.cg.model.*;
 import com.cg.model.dto.CartDetailReqDTO;
 import com.cg.model.dto.CartDetailResDTO;
 import com.cg.model.dto.ImageResDTO;
@@ -65,7 +62,7 @@ public class HomeAPI {
 
             cartDetail.setCart(cart.get());
 
-            if (cartService.existsByIdProduct(cartDetail.getProduct().getId()) > 0){
+            if (cartService.existsByIdProduct(cartDetail.getProduct().getId(),idCustomer) > 0){
 
                 cartService.saveCartDetailIsExitWithProduct(cartDetail);
             } else {
@@ -74,7 +71,7 @@ public class HomeAPI {
             }
         } else {
             Cart newCart = cartDetailReqDTO.toCart();
-
+            newCart.setCustomer(new Customer(idCustomer));
             cartService.save(newCart);
 
             cartDetail.setCart(newCart);

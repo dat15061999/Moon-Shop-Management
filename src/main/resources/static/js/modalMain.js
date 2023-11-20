@@ -40,6 +40,7 @@ page.elements.minusCart = $('.btn-minus-cart');
 page.elements.countCartDetails = $('#show-count-cart-detail');
 page.elements.btnDeleteProFromCart = $('button.btn-delete');
 page.elements.renderCartOnCheckout = $('.renderCarts');
+page.elements.btnOpenCheckout = $('#btn-open-checkout');
 
 
 
@@ -70,7 +71,7 @@ page.commands.render = (obj) => {
     <div class="col-lg-4 col-md-6 col-sm-6 pb-1" >
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="/img/${obj.imageList[0].url}" alt="">
+                            <img class="img-fluid w-100" src="../img/${obj.imageList[0].url}" alt="">
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-shopping-cart"></i></a>
@@ -196,37 +197,48 @@ page.commands.amountProsOnCart = ()=> {
     });
 
     $('#subtotal').text(amount+"$");
+
     $('#total').text(amount+10+"$");
 
 }
+
+
 //render checkout
-page.commands.renderCartToBillCheckout = async ()=>{
+    page.commands.renderCartToBillCheckout = async ()=>{
 
-    const str = '<h6 class="mb-3">Products</h6>';
 
-    const listCart = await $.ajax({
-        url: page.url.getAllCartList + customerID,
-        method: "GET"
-    });
-    page.elements.renderCartOnCheckout.prepend(str)
 
-    listCart.forEach(item => {
-        const str = page.commands.renderCartToBill(item);
+        const listCart = await $.ajax({
+            url: page.url.getAllCartList + customerID,
+            method: "GET"
+        });
+        let str ='';
+
+        let amount = 0;
+
+        listCart.forEach(item => {
+             str = page.commands.renderCartToBill(item);
+
+            page.elements.renderCartOnCheckout.prepend(str)
+
+            amount += item.totalAmount;
+
+        });
+         str = '<h6 class="mb-3">Products</h6>';
 
         page.elements.renderCartOnCheckout.prepend(str);
 
-    });
+        $('#subtotalCheckout').text(amount+"$");
 
-    $('#subtotal').text();
-    $('#total').text();
+        $('#totalCheckout').text(amount+10+"$");
 
 
-}
+    }
 page.commands.renderCartToBill= (item)=> {
     return `
      <div class="d-flex justify-content-between">
          <p>${item.productName}</p>
-         <p>${item.amount}$</p>
+         <p>${item.totalAmount}$</p>
      </div>
     `
     ;
@@ -271,7 +283,7 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
     await $.ajax({
         url: page.url.deleteProductFromCart + cartDetailID}
     )
-    await page.commands.countCartDetailByCustomerID(customerID)
+    await page.commands.countCartDetailByCustomerID()
 
     await page.commands.renderListProductsToCart(1);
 }
@@ -300,13 +312,13 @@ page.elements.btnAddProductToCart.on('click', async () => {
         totalAmount
     }
 
-    await page.commands.addCart(data, customerID);
+    await page.commands.addCart(data);
 
     page.commands.removeAllSizeOrColor(page.elements.getSize);
 
     page.commands.removeAllSizeOrColor(page.elements.getColor);
 
-    await page.commands.countCartDetailByCustomerID(customerID)
+    await page.commands.countCartDetailByCustomerID()
 
     page.elements.modalProductDetail.modal('hide');
 
@@ -361,5 +373,6 @@ page.commands.removeAllSizeOrColor = (item) => {
 $(async () => {
     await page.commands.getAllProduct();
     await page.commands.handleClick();
-    await page.commands.countCartDetailByCustomerID()
+    await page.commands.countCartDetailByCustomerID();
+    await page.commands.renderCartToBillCheckout();
 })

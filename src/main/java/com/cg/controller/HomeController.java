@@ -27,7 +27,13 @@ public class HomeController {
         view.addObject("customerID", id);
         return view;
     }
-
+//    @GetMapping("")
+//    public ModelAndView getHome() {
+//        modelAndView.setViewName("index");
+//        ModelAndView modelAndView = Login();
+//        modelAndView.addObject("someKey", "someValue");
+//        return modelAndView;
+//    }
     @GetMapping("/shop")
     public ModelAndView showShop(HttpSession session){
         ModelAndView view = new ModelAndView("shop");

@@ -14,7 +14,7 @@ public interface ICartService extends IGeneralService<Cart,Long> {
 
     Optional<Cart> findByIdCustomer(Long idCustomer);
 
-    long existsByIdProduct(Long idProduct);
+    long existsByIdProduct(Long idProduct,Long idCustomer);
 
     void saveCartDetailIsExitWithProduct(CartDetail cartDetail);
 
