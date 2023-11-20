@@ -7,21 +7,29 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "customers")
+@Table(name = "bill_details")
 @Accessors(chain = true)
-public class Customer {
+public class BillDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
 
-    public Customer(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn (name = "bill_id")
+    private Bill bill;
+
+    @ManyToOne
+    @JoinColumn (name = "product_id")
+    private Product product;
+
+    private int quantity;
+
+    private BigDecimal amount;
 }

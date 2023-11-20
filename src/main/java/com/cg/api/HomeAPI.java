@@ -1,20 +1,23 @@
 package com.cg.api;
 
 
+import com.cg.model.Cart;
+import com.cg.model.CartDetail;
 import com.cg.model.Image;
 import com.cg.model.Product;
+import com.cg.model.dto.CartDetailReqDTO;
+import com.cg.model.dto.CartDetailResDTO;
 import com.cg.model.dto.ImageResDTO;
 import com.cg.model.dto.ProductResDTO;
 import com.cg.repository.ImageRepository;
 import com.cg.repository.ProductRepository;
+import com.cg.service.bill.IBillService;
+import com.cg.service.cart.ICartService;
 import com.cg.service.product.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,10 @@ public class HomeAPI {
     private IProductService productService;
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private ICartService cartService;
+    @Autowired
+    private IBillService billService;
     @GetMapping
     public ResponseEntity<?> showAll(){
         List<Product> products = productService.findAll();
@@ -47,6 +54,40 @@ public class HomeAPI {
         Optional<Product> product = productService.findById(productId);
         ProductResDTO productResDTO = product.orElseThrow().toProductResDTO();
         return new ResponseEntity<>(productResDTO,HttpStatus.OK);
+    }
+    @PostMapping("/cart/{idCustomer}")
+    public ResponseEntity<?> addProToCart(@PathVariable Long idCustomer,@RequestBody CartDetailReqDTO cartDetailReqDTO){
+        Optional<Cart> cart = cartService.findByIdCustomer(idCustomer);
+
+        CartDetail cartDetail = cartDetailReqDTO.toCartDetail();
+
+        if (cart.isPresent()) {
+
+            cartDetail.setCart(cart.get());
+
+            if (cartService.existsByIdProduct(cartDetail.getProduct().getId()) > 0){
+
+                cartService.saveCartDetailIsExitWithProduct(cartDetail);
+            } else {
+
+                cartService.saveCartDetail(cartDetail);
+            }
+        } else {
+            Cart newCart = cartDetailReqDTO.toCart();
+
+            cartService.save(newCart);
+
+            cartDetail.setCart(newCart);
+
+            cartService.saveCartDetail(cartDetail);
+        }
+        return new ResponseEntity<>(cartDetailReqDTO,HttpStatus.OK);
+    }
+    @GetMapping("/cart/{idCustomer}")
+    public ResponseEntity<?> getCarts(@PathVariable Long idCustomer){
+        List<CartDetailResDTO> cartDetails = cartService.getAllByCustomer_Id(idCustomer);
+
+        return new ResponseEntity<>(cartDetails,HttpStatus.OK);
     }
 
 }

@@ -7,21 +7,22 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "customers")
+@Table(name = "carts")
 @Accessors(chain = true)
-public class Customer {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
+    private LocalDateTime create_at;
 
-    public Customer(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

@@ -1,7 +1,9 @@
 const page = {
     url: {
-        getAllProducts: "http://localhost:8081/api/products",
-        getProductById: "http://localhost:8081/api/products/"
+        getAllProducts: AppUtils.BASE_PRODUCT_API,
+        getProductById: AppUtils.BASE_PRODUCT_API + "/",
+        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API+ "/",
+        getAllCartList: AppUtils.BASE_All_CARTS_API + "/"
     },
     elements: {},
     loadData: {},
@@ -29,8 +31,10 @@ page.elements.amountIn = $('.amountClothes');
 
 //Modal cart
 page.elements.btnOpenCart = $('.btn-cart');
+page.elements.renderListCart = $('.renderCart');
 page.elements.modalCart = $('#modalCart');
-
+page.elements.plusCart = $('.btn-plus-cart');
+page.elements.minusCart = $('.btn-minus-cart');
 
 let productID = 0;
 
@@ -43,9 +47,9 @@ async function fetchALlProduct() {
 }
 
 page.commands.getAllProduct = async () => {
-    const persons = await fetchALlProduct();
+    const products = await fetchALlProduct();
 
-    persons.forEach(item => {
+    products.forEach(item => {
         const str = page.commands.render(item)
 
         page.elements.renderProduct.prepend(str);
@@ -105,13 +109,49 @@ page.commands.changeClickPlusOrMinus = () => {
     page.elements.totalAmount.text(newPrice + "$");
 }
 
-page.commands.handleClickSearch = () => {
+page.commands.handleClick = () => {
     $('button.search').on('click', function () {
         productID = $(this).attr('id').replace('tr_', '');
 
         page.commands.handleClickButtonSearch(productID);
     })
+
+
 }
+//Render list Cart
+page.commands.renderCart = (obj) => {
+    return `
+    <tr id="cd_${obj.idCartDetail}">
+             <td class="align-middle"><img src="/img/${obj.url}" alt="" style="width: 50px;">
+                 ${obj.productName}  (${obj.sizePro}) (${obj.colorPro})
+             </td>
+             <td class="align-middle">${obj.productPrice}$</td>
+             <td class="align-middle">
+                 <div class="input-group quantity mx-auto" style="width: 100px;">
+                     <div class="input-group-btn">
+                         <button class="btn btn-sm btn-primary btn-minus" type="button">
+                             <i class="fa fa-minus"></i>
+                         </button>
+                     </div>
+                     <input type="text"
+                            class="form-control form-control-sm bg-secondary border-0 text-center"
+                            value="${obj.quantity}" readonly>
+                     <div class="input-group-btn">
+                         <button class="btn btn-sm btn-primary btn-plus" type="button">
+                             <i class="fa fa-plus"></i>
+                         </button>
+                     </div>
+                 </div>
+             </td>
+             <td class="align-middle">${obj.totalAmount}$</td>
+             <td class="align-middle">
+                 <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+             </td>
+    </tr>
+    `
+    ;
+}
+
 // Modal product detail
 page.commands.handleClickButtonSearch = (productID) => {
     $.ajax({
@@ -126,63 +166,55 @@ page.commands.handleClickButtonSearch = (productID) => {
             page.elements.imageProduct.attr('src', "/img/" + data.imageList[0].url)
             page.elements.amountIn.val(1);
             page.elements.idProduct.val(data.id)
+
             page.elements.modalProductDetail.modal('show');
         })
 }
 
 // Modal cart detail
-page.elements.btnOpenCart.on('click', () => {
+page.elements.btnOpenCart.on('click', async () => {
+    page.elements.renderListCart.empty();
+
+    const customerID = 1;
+    const listCart = await $.ajax({
+        url: page.url.getAllCartList + customerID,
+        method:"GET"
+    });
+
+    listCart.forEach(item => {
+        const str = page.commands.renderCart(item);
+
+        page.elements.renderListCart.prepend(str);
+    });
+
     page.elements.modalCart.modal('show');
 })
 
 // Add product to cart
 page.elements.btnAddProductToCart.on('click', async () => {
+
     const idCustomer = 1;
 
     const idProduct = page.elements.idProduct.val()
-    const product = await $.ajax({
-        url: page.url.getProductById + idProduct
-    })
-    const namePr = product.productName;
-    const productPrice = product.productPrice;
-    const imagePr = product.imageList[0].url;
 
     const size = page.commands.getSizeOrColor(page.elements.getSize);
+
     const color = page.commands.getSizeOrColor(page.elements.getColor);
+
     const totalAmount = parseFloat(page.elements.totalAmount.text().replace('$', ''));
+
     const amountIn = parseFloat(page.elements.amountIn.val());
 
     const data = {
         idProduct,
-        namePr,
-        productPrice,
-        imagePr,
-        size,
-        color,
-        totalAmount,
-        amountIn
+        idCustomer,
+        sizePro: size,
+        colorPro : color,
+        amount: amountIn,
+        totalAmount
     }
 
-    if (cartProducts !== null) {
-        let productFound = false;
-        for (let i = 0; i < cartProducts.length; i++) {
-            if (cartProducts[i].idProduct === idProduct) {
-                cartProducts[i].amountIn = cartProducts[i].amountIn + amountIn;
-                cartProducts[i].totalAmount = parseFloat(cartProducts[i].totalAmount + totalAmount);
-                productFound = true;
-                break;
-            }
-        }
-        if (!productFound) {
-            cartProducts.push(data);
-        }
-    } else {
-        cartProducts = [data];
-    }
-
-
-    page.commands.addLocalStorage("ID"+idCustomer,cartProducts);
-
+    await page.commands.addCart(data,idCustomer);
 
     page.commands.removeAllSizeOrColor(page.elements.getSize);
 
@@ -190,25 +222,25 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     page.elements.modalProductDetail.modal('hide');
 
-    alert("Thanh cong");
+    AppUtils.showSuccess("Them vao gio hang thanh cong");
+
     console.log(cartProducts)
 })
 
 // add cart
-page.commands.addLocalStorage = (idCustomer,data) => {
-    localStorage.setItem(idCustomer,JSON.stringify(data));
+page.commands.addCart = async (data,idCustomer) => {
+    await $.ajax( {
+        url: page.url.addProductToCart + idCustomer,
+        contentType: "application/json",
+        data:JSON.stringify(data),
+        method: "POST"
+    })
 }
-// get cart
-page.commands.parseLocalStorage = (idCustomer)=> {
-    return JSON.parse(localStorage.getItem("ID"+idCustomer));
-}
-
-
 
 //get size or color product
 page.commands.getSizeOrColor = function (element) {
-    var selectedValue ;
-    for (var i = 0; i < element.length; i++) {
+    let selectedValue;
+    for (let i = 0; i < element.length; i++) {
         if (element[i].checked) {
             selectedValue = $('label[for="' + element[i].id + '"]').text();
         }
@@ -222,18 +254,16 @@ page.commands.getSizeOrColor = function (element) {
     }
 }
 
-page.elements.removeAllSizeOrColor = (item)=> {
-    for (let i = 0 ; i < item.length; i++) {
-        if (item[i].checked()) {
-            item[i].prop('check', false);
+page.commands.removeAllSizeOrColor = (item) => {
+    for (let i = 0; i < item.length; i++) {
+        if (item[i].checked) {
+            item[i].checked = false;
         }
     }
 }
 
 
-
 $(async () => {
     await page.commands.getAllProduct();
-    page.commands.handleClickSearch();
-    cartProducts = page.commands.parseLocalStorage(1);
+    page.commands.handleClick();
 })

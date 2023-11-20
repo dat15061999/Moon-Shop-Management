@@ -36,6 +36,10 @@ public class Product {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> imageList;
 
+    public Product(Long id) {
+        this.id = id;
+    }
+
     public ProductResDTO toProductResDTO() {
         return new ProductResDTO()
                 .setId(id)
