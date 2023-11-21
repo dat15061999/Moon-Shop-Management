@@ -5,6 +5,7 @@ class AppUtils {
     static BASE_All_CARTS_API = this.BASE_PRODUCT_API + '/cart';
     static BASE_DELETE_PRODUCT_FROM_CART_API = this.BASE_PRODUCT_API + '/delete/';
     static BASE_COUNT_CART_API = this.BASE_PRODUCT_API + '/cartDetail/';
+    static BASE_GET_CUSTOMER_BY_ID_API = this.BASE_PRODUCT_API + '/customer/';
 
     static showSuccess = (text) => {
         Swal.fire({

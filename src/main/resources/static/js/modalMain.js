@@ -5,7 +5,8 @@ const page = {
         addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API + "/",
         getAllCartList: AppUtils.BASE_All_CARTS_API + "/",
         deleteProductFromCart: AppUtils.BASE_DELETE_PRODUCT_FROM_CART_API,
-        countCartDetails: AppUtils.BASE_COUNT_CART_API
+        countCartDetails: AppUtils.BASE_COUNT_CART_API,
+        getCustomerById:AppUtils.
     },
     elements: {},
     loadData: {},
@@ -42,6 +43,13 @@ page.elements.btnDeleteProFromCart = $('button.btn-delete');
 page.elements.renderCartOnCheckout = $('.renderCarts');
 page.elements.btnOpenCheckout = $('#btn-open-checkout');
 
+//Modal Customer
+page.elements.modalCustomer = $('#modalCustomer');
+page.elements.btnCustomer = $('.btn-profile');
+page.elements.nameCustomer = $('#name');
+page.elements.emailCustomer = $('#email');
+page.elements.phoneCustomer = $('#phone');
+page.elements.dobCustomer = $('#dob');
 
 
 let customerID = $('#customerID').val();
@@ -51,9 +59,9 @@ let productID = 0;
 let cartProducts = [];
 
 async function fetchALlProduct() {
-    return await $.ajax({
+    return $.ajax({
         url: page.url.getAllProducts
-    })
+    });
 }
 
 page.commands.getAllProduct = async () => {
@@ -97,10 +105,10 @@ page.commands.render = (obj) => {
                                 <small class="fa fa-star text-primary mr-1"></small>
                                 <small class="fa fa-star text-primary mr-1"></small>
                                 <small>(99)</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+         </div>
+       </div>
+    </div>
     `;
 }
 
@@ -126,7 +134,20 @@ page.commands.handleClick = async () => {
         page.commands.handleClickButtonSearch(productID);
     })
 }
+//Modal customer
+page.elements.btnCustomer.on('click',function (){
+    page.commands.renderCustomer();
+})
 
+page.commands.renderCustomer = ()=>{
+    $.ajax({
+        url:page.url.getCustomerById + customerID
+    })
+        .done( async (data)=>{
+
+        })
+    page.elements.modalCustomer.modal('show');
+}
 
 //Render list Cart
 page.commands.renderCart = (obj) => {

@@ -1,9 +1,11 @@
 package com.cg.model;
 
+import com.cg.model.dto.CustomerResDTO;
 import com.cg.model.enums.ELock;
 import com.cg.model.enums.ERole;
 import com.cg.model.enums.EStatusCustomer;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,5 +50,14 @@ public class Customer {
     private ERole role;
     public Customer(Long id) {
         this.id = id;
+    }
+
+    public CustomerResDTO toCustomerResDTO(){
+        return new CustomerResDTO()
+                .setName(name)
+                .setEmail(email)
+                .setPhone(phone)
+                .setDob(dob)
+                ;
     }
 }
