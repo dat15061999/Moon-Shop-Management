@@ -4,33 +4,32 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="showCustomerModal">Product Cart Detail</h5>
+          <h5 class="modal-title" id="showCustomerModal">Information Customer</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="post" id="frmCustomer">
+          <div class="area-error hide">
+          </div>
+          <form id="frmCustomer" method="post">
             <div class="col-md-12 form-group" style="text-align: center;">
               <img src="/img/cat-1.jpg">
             </div>
             <div class="col-md-12 form-group">
               <label>Full Name</label>
-              <input class="form-control" type="text" placeholder="John" id="name">
+              <input class="form-control" type="text" id="name">
+
             </div>
             <div class="col-md-12 form-group">
               <label>E-mail</label>
-              <input class="form-control" type="text" placeholder="example@email.com" id="email">
+              <input class="form-control" type="text"  id="email">
             </div>
             <div class="col-md-12 form-group">
               <label>Mobile No</label>
-              <input class="form-control" type="text" placeholder="+123 456 789" id="phone">
+              <input class="form-control" type="text"  id="phone">
             </div>
             <div class="col-md-12 form-group">
               <label>Date of birth</label>
-              <input class="form-control" type="date" placeholder="123 Street" id="dob">
-            </div>
-            <div class="col-md-12 form-group">
-              <label>Address </label>
-              <input class="form-control" type="text" value="28 Nguyen Tri Phuong" readonly>
+              <input class="form-control" type="date"  id="dob">
             </div>
             <div class="col-md-12 form-group">
               <button class="btn btn-success" type="button" id="btn-update-customer">Update</button>

@@ -19,6 +19,9 @@ import com.cg.until.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +47,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException
                         (String.format(AppMessage.ID_NOT_FOUND, "User"))));
     }
+
     public List<SelectOptionResponse> findAll(){
         return customerRepository.findAllByDeletedFalse().stream().map(
                         e-> new SelectOptionResponse(e.getId().toString(),e.getName()))
@@ -79,13 +83,16 @@ public class UserService {
         user.setStatusCustomer(EStatusCustomer.SILVER);
         return customerRepository.save(user);
     }
-    public void update(UserEditRequest userEditRequest, Long id){
+    public void update(UserEditRequest userEditRequest, Long id) {
         var userDB = findById(id);
         userDB.setName(userEditRequest.getName());
         userDB.setPhone(userEditRequest.getPhone());
         userDB.setDob(LocalDate.parse(userEditRequest.getDob()));
+    }
 
-        customerRepository.save(userDB);
+    public void save(Customer customer){
+
+        customerRepository.save(customer);
 
     }
     public void lockById(Long id){
@@ -109,5 +116,22 @@ public class UserService {
         Customer user = findById(id);
         user.setRole(ERole.ROLE_USER);
         customerRepository.save(user);
+    }
+    public Optional<Customer> getCurrentCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+// Kiểm tra xem người dùng đã đăng nhập hay chưa
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Lấy thông tin người dùng đăng nhập hiện tại
+            Object principal = authentication.getPrincipal();
+
+            // Kiểm tra xem principal có phải là một UserDetails không
+            if (principal instanceof UserDetails userDetails) {
+                String username = userDetails.getUsername();
+                // Thực hiện xử lý với thông tin người dùng
+                return findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username);
+            }
+        }
+        return Optional.empty();
     }
 }

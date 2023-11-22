@@ -1,4 +1,8 @@
 package com.cg.model;
+
+
+import com.cg.model.enums.EPayment;
+import com.cg.model.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +19,18 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime create_at;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer user;
     private String userName;
     private String paymentMethod;
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private EPayment ePayment;
+
+    @Enumerated(value = EnumType.STRING)
+    private EStatus status;
+
 }
+

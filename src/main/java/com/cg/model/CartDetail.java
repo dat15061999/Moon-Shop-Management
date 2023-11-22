@@ -33,10 +33,10 @@ public class CartDetail {
 
     private int quantity;
 
-    private BigDecimal amount;
+    private BigDecimal totalAmount;
 
-    private String product_size;
+    private String product_name;
 
-    private String product_color;
+    private BigDecimal product_price;
 
 }

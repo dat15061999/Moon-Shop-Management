@@ -1,17 +1,19 @@
 package com.cg.api;
 
 
+import com.cg.exception.AppUtils;
 import com.cg.model.*;
 import com.cg.model.dto.*;
 import com.cg.repository.ImageRepository;
-import com.cg.repository.ProductRepository;
 import com.cg.service.bill.IBillService;
 import com.cg.service.cart.ICartService;
 import com.cg.service.product.IProductService;
 import com.cg.service.userService.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class HomeAPI {
     private IBillService billService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AppUtils appUtils;
     @GetMapping
     public ResponseEntity<?> showAll(){
         List<Product> products = productService.findAll();
@@ -105,9 +109,33 @@ public class HomeAPI {
 
     @GetMapping("/customer/{customerID}")
     public  ResponseEntity<?> getCustomerByID(@PathVariable Long customerID){
+
         Customer customer = userService.findById(customerID);
 
         CustomerResDTO customerResDTO = customer.toCustomerResDTO();
+
         return new ResponseEntity<>(customerResDTO,HttpStatus.OK);
+    }
+    @PatchMapping("/customer/{customerID}")
+    public  ResponseEntity<?> updateCustomerByID(@PathVariable Long customerID, @Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult){
+
+
+        if (bindingResult.hasFieldErrors()){
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+
+        Customer customer = userService.findById(customerID);
+
+        customer.setName(customerReqDTO.getName());
+
+        customer.setDob(customerReqDTO.getDob());
+
+        customer.setEmail(customerReqDTO.getEmail());
+
+        customer.setPhone(customerReqDTO.getPhone());
+
+        userService.save(customer);
+
+        return new ResponseEntity<>(customer,HttpStatus.OK);
     }
 }

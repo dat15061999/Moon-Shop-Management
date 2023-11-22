@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 public class CartDetailReqDTO {
     private Long idProduct;
     private Long idCustomer;
-    private String sizePro;
-    private String colorPro;
+    private String productName;
+    private BigDecimal productPrice;
     private int amount;
     private BigDecimal totalAmount;
 
@@ -33,11 +33,11 @@ public class CartDetailReqDTO {
     }
     public CartDetail toCartDetail(){
         return new CartDetail()
-                .setAmount(totalAmount)
+                .setTotalAmount(totalAmount)
                 .setProduct(new Product(idProduct))
+                .setProduct_name(productName)
+                .setProduct_price(productPrice)
                 .setQuantity(amount)
-                .setProduct_color(colorPro)
-                .setProduct_size(sizePro)
                 ;
     }
 

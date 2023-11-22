@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
+import org.hibernate.annotations.GenericGenerator;
 
 
 @NoArgsConstructor
@@ -20,9 +20,24 @@ import lombok.experimental.Accessors;
 public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_folder")
+    private String fileFolder;
+
+    @Column(name = "file_url")
     private String url;
+
+    @Column(name = "file_type")
+    private String fileType;
+
+    @Column(name = "cloud_id")
+    private String cloudId;
 
     @ManyToOne
     @JsonIgnore

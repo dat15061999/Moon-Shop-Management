@@ -67,9 +67,7 @@ public class CartService implements ICartService{
         Optional<CartDetail> cartDetailOld = cartDetailRepository.findCartDetailByProductId(cartDetail.getProduct().getId());
 
         CartDetail newCartDetail = cartDetailOld.get();
-        newCartDetail.setAmount(newCartDetail.getAmount().add(cartDetail.getAmount()));
-        newCartDetail.setProduct_size(cartDetail.getProduct_size());
-        newCartDetail.setProduct_color(cartDetail.getProduct_color());
+        newCartDetail.setTotalAmount(newCartDetail.getTotalAmount().add(cartDetail.getTotalAmount()));
         newCartDetail.setQuantity(newCartDetail.getQuantity()+cartDetail.getQuantity());
 
         cartDetailRepository.save(newCartDetail);

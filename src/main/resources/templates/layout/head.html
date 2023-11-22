@@ -24,7 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </th:block>
 <th:block th:fragment="nav">
-<<<<<<< HEAD
+
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-1 px-xl-5">
@@ -35,26 +35,6 @@
                     <a class="text-body mr-3" href="">Help</a>
                     <a class="text-body mr-3" href="">FAQs</a>
                 </div>
-=======
-  <!-- Topbar Start -->
-  <div class="container-fluid">
-    <div class="row bg-secondary py-1 px-xl-5">
-      <div class="col-lg-6 d-none d-lg-block">
-        <div class="d-inline-flex align-items-center h-100">
-          <a class="text-body mr-3" href="">About</a>
-          <a class="text-body mr-3" href="">Contact</a>
-          <a class="text-body mr-3" href="">Help</a>
-          <a class="text-body mr-3" href="">FAQs</a>
-        </div>
-      </div>
-      <div class="col-lg-6 text-center text-lg-right">
-        <div class="d-inline-flex align-items-center">
-          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a href="/login" class="dropdown-item" type="button">Login</a>
-              <a href="/login" class="dropdown-item" type="button">Log out</a>
->>>>>>> f8b83d0c01d3b690ad601bd1108b3e7edff331d8
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
@@ -62,15 +42,15 @@
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My
                             Account
                         </button>
-                        <input type="hidden" id="customerID" th:value="${customerID}">
-                        <th:block th:if="${customerID} == null">
+                        <input type="hidden" id="customerID" th:value="${customer.id}">
+                        <th:block th:if="${customer.id} == null">
                             <div class="dropdown-menu dropdown-menu-right">
                                 <button class="dropdown-item" type="button">Sign in</button>
                                 <button class="dropdown-item" type="button">Sign up</button>
                                 <a href="/login" class="dropdown-item" type="button">Login</a>
                             </div>
                         </th:block>
-                        <th:block th:if="${customerID} != null">
+                        <th:block th:if="${customer.id} != null">
                             <div class="dropdown-menu dropdown-menu-right">
                                 <button class="dropdown-item btn-profile" type="button">Profile</button>
                                 <a class="dropdown-item" href="/logout">Logout</a>
@@ -186,8 +166,9 @@
                             <a href="/home/shop" class="nav-item nav-link">Shop</a>
                             <a href="/home/detail" class="nav-item nav-link">Shop Detail</a>
                             <a href="/home/checkout" class="nav-item nav-link">Checkout</a>
+                            <a href="/home/contact" class="nav-item nav-link">Contact</a>
                         </div>
-                        <a href="/home/contact" class="nav-item nav-link">Contact</a>
+
                     </div>
                     <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                         <a href="" class="btn px-0">

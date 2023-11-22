@@ -21,17 +21,16 @@ import java.util.Optional;
 public class HomeController {
     private final UserService userService;
     @GetMapping("")
-    public ModelAndView index(HttpSession session) {
+    public ModelAndView index() {
         ModelAndView view = new ModelAndView("index");
-        Long id = (Long) session.getAttribute("idCustomer");
-        view.addObject("customerID", id);
+
+        view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
     @GetMapping("/shop")
     public ModelAndView showShop(HttpSession session){
         ModelAndView view = new ModelAndView("shop");
-        Long id = (Long) session.getAttribute("idCustomer");
-        view.addObject("customerID", id);
+        view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
 
@@ -86,12 +85,10 @@ public class HomeController {
     }
 
     public ModelAndView Login(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
+
 
             // Tìm người dùng theo username
-            Optional<Customer> user = userService.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username);
+            Optional<Customer> user = userService.getCurrentCustomer();
 
             if (user.isPresent()) {
                 modelAndView.addObject("loggedIn", true);
@@ -99,10 +96,6 @@ public class HomeController {
             } else {
                 modelAndView.addObject("loggedIn", false);
             }
-        } else {
-            modelAndView.addObject("loggedIn", false);
-        }
-
         return modelAndView;
     }
     @GetMapping("/contact")
@@ -117,8 +110,7 @@ public class HomeController {
 
     public ModelAndView showCheckout(HttpSession session) {
         ModelAndView view = new ModelAndView("checkout");
-        Long id = (Long) session.getAttribute("idCustomer");
-        view.addObject("customerID", id);
+        view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
 

@@ -17,11 +17,11 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
     boolean existsByNameIgnoreCase(String name);
     boolean existsByEmailIgnoreCase(String email);
     boolean existsByPhone(String phone);
-<<<<<<< HEAD
+
 
     Optional<Customer> getCustomerByName(String name);
-=======
+
     List<Customer> findAllByDeletedFalse();
 
->>>>>>> f8b83d0c01d3b690ad601bd1108b3e7edff331d8
+
 }

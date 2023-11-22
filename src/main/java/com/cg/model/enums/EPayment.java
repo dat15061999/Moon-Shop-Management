@@ -1,5 +1,5 @@
 package com.cg.model.enums;
 
 public enum EPayment {
-    UNPAID,PAID
+    PAYPAL,DIRECT_CHECK,BANK_TRANSFER;
 }

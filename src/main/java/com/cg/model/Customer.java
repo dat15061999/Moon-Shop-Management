@@ -5,7 +5,6 @@ import com.cg.model.enums.ELock;
 import com.cg.model.enums.ERole;
 import com.cg.model.enums.EStatusCustomer;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +34,8 @@ public class Customer {
     private String phone;
 
     private LocalDate dob;
+
+    private String address;
 
     private boolean deleted = false;
 

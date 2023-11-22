@@ -30,4 +30,9 @@ public class BillDetail {
     private BigDecimal product_price;
     private String product_size;
     private String product_color;
+
+    private BigDecimal totalAmount;
+
+
+
 }

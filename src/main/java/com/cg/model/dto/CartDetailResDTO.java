@@ -19,18 +19,14 @@ public class CartDetailResDTO {
     private String productName;
     private BigDecimal productPrice;
     private String url;
-    private String sizePro;
-    private String colorPro;
     private int quantity;
     private BigDecimal totalAmount;
-    public CartDetailResDTO(Long idCartDetail,Long idProduct, String productName, BigDecimal productPrice, String url, String sizePro, String colorPro, int quantity, BigDecimal totalAmount) {
+    public CartDetailResDTO(Long idCartDetail,Long idProduct, String productName, BigDecimal productPrice, String url, int quantity, BigDecimal totalAmount) {
         this.idCartDetail= idCartDetail;
         this.idProduct = idProduct;
         this.productName = productName;
         this.productPrice = productPrice;
         this.url = url;
-        this.sizePro = sizePro;
-        this.colorPro = colorPro;
         this.quantity = quantity;
         this.totalAmount = totalAmount;
     }
