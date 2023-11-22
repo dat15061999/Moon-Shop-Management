@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout.html :: header}"></th:block>
+<style>
+  th {
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  td{
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  option{
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  @keyframes slideLeft {
+    0%{
+      transform: translateX(100%);
+    }
+    100%{
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideRight {
+    0%{
+      transform: translateX(-100%);
+    }
+    100%{
+      transform: translateX(0);
+    }
+  }
+  .main{
+    height: 332px;
+    margin-bottom: 10px  ;
+    position: relative;
+  }
+  #list-image{
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    display: flex;
+    border: 1px solid;
+  }
+  #list-image div{
+    flex: 1;
+  }
+  #list-image img {
+
+    object-fit: cover;
+    object-position: center;
+  }
+  .control{
+    position: absolute;
+    top: 33%;
+    font-size: 70px;
+    color: black;
+  }
+  .prev{
+    left: 16px;
+  }
+  .next{
+    right: 16px;
+  }
+  #img-feature{
+    width: 100%;
+    height: 100%;
+  }
+  #img-feature{
+    transition: 1s;
+    animation: slideLeft 1s ease-in-out forwards ;
+  }
+</style>
+<div class="container">
+  <div style="border-radius: 37px; background-color: white">    <h1 class="card-header" style="text-align: center">User Management</h1>
+  </div>
+  <br>
+  <!-- Modal -->
+  <div class="modal fade bd-example-modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" >
+      <div class="modal-content">
+        <div class="modal-header" style="display: flex;justify-content: center">
+          <h4 class="modal-title" id="staticBackdropLabel"  >Modal title</h4>
+          <!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="color"></button>-->
+        </div>
+        <div class="modal-body">
+          <form id="userForm"  >
+            <div class="form-group col-12" >
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="Họ và tên"  oninput="validateNameUser(this)" >
+              <label for="name" id="nameError" class="error-message" style="color: red;"></label>
+            </div>
+
+            <div class="form-group row" >
+              <div class="form-group col-6">
+                <label for="passWord">Password</label>
+                <input type="text" class="form-control" id="passWord" placeholder="Mật khẩu" name="passWord" oninput="validatePassword(this)" >
+                <label for="passWord" id="passWordError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" placeholder="Email" name="email" oninput="validateEmail(this)" >
+                <label for="email" id="emailError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
+            <div class="form-group row" >
+              <div class="form-group col-6" >
+                <label for="phone">Phone:</label>
+                <input type="text" class="form-control" id="phone" name="phone" placeholder="Số điện thoại"  oninput="validatePhoneUSER(this)"  >
+                <label for="phone" id="phoneError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="dob">Date Of Birth</label>
+                <input type="date" class="form-control" id="dob"  name="dob" oninput="validateDob(this)" >
+                <label for="dob" id="dobError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
+<!--            <div>-->
+<!--              <div class="mb-2">Avatar:</div>-->
+<!--              <div>-->
+<!--                <label id="poster" for="post" >-->
+<!--                  <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>-->
+<!--                </label>-->
+<!--                <input id="post" class="d-none" type="file" accept="image/*"   onchange="previewAvatar(event)">-->
+<!--              </div>-->
+<!--              <label th:class="mb-2" id="posterError" class="error-message" style="color: red;"></label>-->
+
+<!--            </div>-->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn "  id="save"  >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="showImagesList" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="showImagesListLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 600px">
+      <div class="modal-content">
+        <div class="modal-header" style="display: flex;justify-content: center">
+          <h4 class="modal-title" id="showImagesListLabel" style="margin-left: 206px">List Images</h4>
+          <i class="fas fa-times" style="margin-left: 201px; color: black" id="iconNone"></i>
+
+        </div>
+        <div class="modal-body">
+          <div id="main" style="margin-bottom: 10px">
+            <div id="notification" style="font-size: 50px; color: #f1aca7;text-align: center"></div>
+            <img id="img-feature" >
+          </div>
+          <div id="list-image" >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display: flex ; justify-content: space-evenly">
+      <div style="width: 20%;height: 65px">
+        <button style="background-color: #ea9797; margin: 12px; color: beige" type="button" class="btn   " data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="create">
+          Create User
+        </button>
+      </div>
+      <nav
+              class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+              id="layout-navbar"
+      >
+        <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+          <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+            <i class="bx bx-menu bx-sm"></i>
+          </a>
+        </div>
+
+        <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+          <!-- Search -->
+          <div class="navbar-nav align-items-center">
+            <div class="nav-item d-flex align-items-center" style="width: 300px">
+              <input
+                      width="329px"
+                      type="search"
+                      class="form-control border-0 shadow-none"
+                      placeholder="Search..."
+                      aria-label="Search..."
+                      id ="search"
+              />
+            </div>
+          </div>
+          <!-- /Search -->
+
+        </div>
+      </nav>
+    </div>
+    <table class="table table-bordered ">
+      <tr>
+        <th >No</th>
+        <th >UserName</th>
+        <th >Type</th>
+        <th style="width: 10%">Role</th>
+        <th style="width: 10%">Status</th>
+        <th >Action</th>
+      </tr>
+      <tbody id="tBodyUser">
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+      <nav aria-label="...">
+        <ul class="pagination" id="paginationUser">
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<th:block th:replace="~{layout.html :: footer}"></th:block>
+<script src="/myjs/user.js"></script>
+<script>
+
+</script>
+
+
+</html>

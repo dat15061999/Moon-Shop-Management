@@ -6,27 +6,34 @@ import com.cg.model.Customer;
 import com.cg.service.auth.AuthService;
 import com.cg.service.auth.request.RegisterRequest;
 import jakarta.servlet.http.HttpSession;
+import com.cg.service.userService.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
 
 import java.util.Optional;
 
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/")
 public class AuthController {
 
     private final AuthService authService;
+
+    private  final UserService userService;
     @GetMapping("/login")
     public String showLogin(){
         return "login";
@@ -44,17 +51,25 @@ public class AuthController {
     @GetMapping("/login-success")
     public String loginSuccess(HttpSession session){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+       ModelAndView modelAndView = new ModelAndView();
+        if (auth != null
+                && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
+                && auth.getPrincipal() instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
 
-        Optional<Customer> customer = authService.getCustomerByName(auth.getName());
+            // Tìm người dùng theo username
+            Optional<Customer> user = userService.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username);
 
-        Customer newCustomer = customer.get();
-
-        session.setAttribute("idCustomer", newCustomer.getId());
-
-        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return "redirect:/dashboard";
+            if (user.isPresent()) {
+                modelAndView.addObject("loggedIn", true);
+                modelAndView.addObject("user", user.get());
+            } else {
+                modelAndView.addObject("loggedIn", false);
+            }
+            return "redirect:/home/dashboard";
         }else{
-            return "redirect:/home";
+            return "redirect:/home" ;
+
         }
     }
 
@@ -62,15 +77,14 @@ public class AuthController {
     @PostMapping("/register")
     public String registration(@Valid @ModelAttribute("user") RegisterRequest request,
                                BindingResult result,
-                               Model model)
-    {
+                               Model model) {
         authService.checkNameOrPhoneOrEmail(request, result);
         model.addAttribute("user",request);
         if(result.hasErrors()){
             return "/register";
         }
-
+        model.addAttribute("success","đăng kí thành công");
         authService.register(request);
-        return "redirect:/register?success";
+        return "redirect:/login?success";
     }
 }

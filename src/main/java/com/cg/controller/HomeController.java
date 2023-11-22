@@ -27,13 +27,6 @@ public class HomeController {
         view.addObject("customerID", id);
         return view;
     }
-//    @GetMapping("")
-//    public ModelAndView getHome() {
-//        modelAndView.setViewName("index");
-//        ModelAndView modelAndView = Login();
-//        modelAndView.addObject("someKey", "someValue");
-//        return modelAndView;
-//    }
     @GetMapping("/shop")
     public ModelAndView showShop(HttpSession session){
         ModelAndView view = new ModelAndView("shop");
@@ -53,9 +46,40 @@ public class HomeController {
     }
     private final ModelAndView modelAndView = new ModelAndView();
 
-    @GetMapping("/price")
-    public ModelAndView price() {
-        modelAndView.setViewName("price");
+
+    @GetMapping("/")
+    public ModelAndView getHome() {
+        modelAndView.setViewName("index");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+
+
+    @GetMapping("/dashboard")
+    public ModelAndView dash() {
+        modelAndView.setViewName("dashboard");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/product")
+    public ModelAndView pro() {
+        modelAndView.setViewName("product");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/bill")
+    public ModelAndView bill() {
+        modelAndView.setViewName("bill");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/user")
+    public ModelAndView user() {
+        modelAndView.setViewName("user");
         ModelAndView modelAndView = Login();
         modelAndView.addObject("someKey", "someValue");
         return modelAndView;
@@ -63,8 +87,7 @@ public class HomeController {
 
     public ModelAndView Login(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails userDetails) {
             String username = userDetails.getUsername();
 
             // Tìm người dùng theo username
@@ -91,11 +114,17 @@ public class HomeController {
     }
 
     @GetMapping("/checkout")
-    public ModelAndView showCheckout(HttpSession session){
+
+    public ModelAndView showCheckout(HttpSession session) {
         ModelAndView view = new ModelAndView("checkout");
         Long id = (Long) session.getAttribute("idCustomer");
         view.addObject("customerID", id);
         return view;
+    }
+
+    @GetMapping("/login")
+    public String showLogin(){
+        return "/login";
     }
 
 }

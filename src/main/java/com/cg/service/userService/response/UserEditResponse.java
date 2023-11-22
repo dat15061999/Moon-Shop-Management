@@ -1,12 +1,11 @@
 package com.cg.service.userService.response;
 
-import com.cg.model.enums.ELock;
-import com.cg.model.enums.ERole;
-import com.cg.model.enums.EStatusCustomer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,14 +16,13 @@ public class UserEditResponse {
 
     private String email;
 
+
     private String passWord;
 
-    private String avatar;
+    private LocalDate dob;
 
     private String phone;
 
-    private LocalDate dob;
-    private EStatusCustomer statusCustomer;
-    private ELock eLock;
-    private ERole eRole;
+    private String eLock;
+    private String eRole;
 }

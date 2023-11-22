@@ -5,6 +5,7 @@ package com.cg.service.auth;
 import com.cg.model.Customer;
 import com.cg.model.enums.ELock;
 import com.cg.model.enums.ERole;
+import com.cg.model.enums.EStatusCustomer;
 import com.cg.repository.CustomerRepository;
 import com.cg.service.auth.request.RegisterRequest;
 import com.cg.until.AppUtil;
@@ -33,6 +34,9 @@ public class AuthService implements UserDetailsService {
         var user = AppUtil.mapper.map(request, Customer.class);
         user.setRole(ERole.ROLE_USER);
         user.setPassWord(passwordEncoder.encode(user.getPassWord()));
+        user.setDeleted(false);
+        user.setELock(ELock.UNLOCK);
+        user.setStatusCustomer(EStatusCustomer.SILVER);
         userRepository.save(user);
     }
 

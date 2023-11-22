@@ -44,6 +44,9 @@
             <div th:if="${param.error}">
                 <div class="alert alert-danger">Email, Mật khẩu không hợp lệ hoặc Tài khoản bị khóa .</div>
             </div>
+<!--            <div th:if="${param.success}">-->
+<!--                <div class="alert alert-danger">Đăng ký thành công .</div>-->
+<!--            </div>-->
             <div th:if="${param.logout}">
                 <script>
                     window.onload = (event) => {
@@ -60,7 +63,7 @@
             <div class="" >
                 <div class="col-md-7" style="margin-left: 129px">
                     <h3>Login to <strong>MultiShop</strong></h3>
-                    <form method="post" role="form" th:action="@{/login}">
+                    <form method="post" id="formLogin" role="form" th:action="@{/login}">
                         <div class="form-group first">
                             <label for="name">Username</label>
                             <input type="text" class="form-control" placeholder="your-email@gmail.com" id="name"   name="username">
@@ -88,4 +91,9 @@
 </div>
 </body>
 </html>
+<!--<script>-->
+<!--    document.getElementById("formLogin").addEventListener("click",(e)=>{-->
+<!--        e.preventDefault()-->
+<!--    })-->
+<!--</script>-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

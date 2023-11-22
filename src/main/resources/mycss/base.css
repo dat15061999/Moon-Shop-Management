@@ -1,0 +1,269 @@
+.error {
+    color: red;
+    padding: 3px;
+    display: none;
+}
+
+.input-custom:invalid[focused="true"]~span {
+    display: block;
+}
+th#price-check:hover {
+    cursor: pointer;
+}
+.alertify-notifier {
+    position: fixed;
+    top: 0;
+    right: 10px;
+    transform: translateX(-50%);
+    width: 100%;
+    z-index: 9999; /* Đảm bảo nó nằm trên cùng */
+}
+.select-selection {
+    border-radius: 0 !important;
+}
+/* CSS cho hình ảnh trước khi tải lên */
+#poster-preview {
+    max-width: 200px; /* Điều chỉnh kích thước tối đa của hình ảnh */
+    height: auto;
+    margin-top: 10px;
+}
+
+.slide-image-preview {
+    max-width: 100px; /* Điều chỉnh kích thước tối đa của hình ảnh slide */
+    height: auto;
+    margin-right: 10px;
+}
+.input-custom:invalid[focused="true"]~span {
+    display: block;
+}
+.input-custom:invalid[focused="true"] {
+    border-color: red !important;
+}
+
+
+.LOCK {
+    background: aquamarine;
+    border: aquamarine;
+    font-weight: bold;
+}
+
+.UNLOCK {
+    background: darkslateblue;
+    border: darkslateblue;
+    color: whitesmoke;
+    font-weight: bold;
+}
+
+.avatar-preview{
+    width: 500px;
+    height: 300px;
+    object-fit: cover;
+    margin-right: 1em;
+}
+.avatar-away{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 1em;
+}
+.avatar-away:hover{
+    width: 100px;
+    height: 100px;
+}
+.avatar-previews{
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+}
+#save {
+    background-color: #ea9797;
+
+    color: white;
+}
+#save:hover{
+    background-color: #f43333;
+}
+#layout-navbar{
+    width: 350px;
+    height: 40px;
+}
+.enlarge-image {
+    max-width: 100%; /* Kích thước tối đa ban đầu */
+    transition: transform 0.3s; /* Thời gian chuyển đổi */
+    cursor: pointer; /* Kiểu con trỏ khi rê chuột vào */
+    border-radius: 7px;
+}
+
+.enlarge-image:hover {
+    transform: scale(1.2); /* Kích thước lớn hơn khi hover */
+
+}
+
+.image-preview {
+    /*margin: 10px;*/
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+}
+
+
+.delete-icon {
+    position: absolute;
+    top: -10px;
+    right: -19px;
+    cursor: pointer;
+    color: black;
+}
+#create:hover{
+    font-size: 110%;
+}
+.priceRange:hover{
+    cursor: pointer;
+}
+.delete:hover{
+    font-size: 120%;
+
+}
+
+.edit:hover{
+    font-size: 120%;
+
+}
+
+.detail:hover{
+    font-size: 120%;
+
+}
+tr{
+
+}
+#iconNone:hover{
+    cursor: pointer;
+}
+ul{
+    color: red;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: wheat;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 5px;
+    padding: 0;
+    padding-left: 20px;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+    color: #0c0b0a;
+}
+.select2-results__option{
+    color: black;
+}
+.select2-container--default .select2-selection--multiple {
+  border:   1px solid rgb(217, 222, 227)
+}
+.select2 select2-container select2-container--default {
+    border: 1px solid red;
+    width: 104%;
+}
+span.select2-container--default .select2-selection--single {
+    width: 104%;
+    height: 38px;
+
+}
+#divBan {
+    cursor: pointer;
+}
+#diveRole {
+    cursor: pointer;
+}
+#divPayment {
+    cursor: pointer;
+}
+#userDB {
+    cursor: pointer;
+}
+span.select2-container--default .select2-selection--multiple .select2-selection__choice {
+background-color: wheat;
+}
+span.select2-container--default.select2-container--focus .select2-selection--multiple{
+    border: solid #696cff 1px;
+    border-radius: 7px;
+}
+span.select2-container--default .select2-selection--single {
+    border: 1px solid rgb(217, 222, 227);
+
+}
+
+.select2-container--default .select2-selection--multiple {
+    /* Sử dụng thanh cuộn khi nội dung vượt quá chiều cao tối đa */
+}
+
+span.select2-container--default .select2-selection--multiple{
+    border: 1px solid rgb(217, 222, 227);
+    max-height: 250px; /* Đặt giá trị tùy chọn cho chiều cao tối đa */
+    overflow-x: auto;
+    border-radius: 7px;
+    height: 73px
+
+}
+span.select2-container--default .select2-selection--single .select2-selection__rendered{
+    color: #697a8d;
+}
+
+
+/*span.select2-container--default.select2-container--focus .select2-selection--multiple:focus{*/
+
+/*    color: #697a8d;*/
+/*    background-color: #fff;*/
+/*    border-color: rgba(249, 249, 255, 0.54);*/
+/*    outline: 0;*/
+/*    box-shadow: 0 0 0.25rem 0.05rem rgba(105, 108, 255, 0.1);*/
+
+/*}*/
+.loader-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: none;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.loader {
+    left: 50%;
+    top: 40%;
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    z-index: 9999;
+    border: 6px solid transparent;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
