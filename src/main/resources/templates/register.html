@@ -38,47 +38,48 @@
             <div class="login100-more" style="background-image: url('/img/carousel-1.jpg');"></div>
 
             <div class="modal-body" style="width: 588px;">
-                <form class="loginForm" id="registerForm" method="post" th:object="${user}" style="height: 603px">
-                    <div th:if="${param.success}">
-                        <div class="alert alert-danger">Đăng ký thành công .</div>
-                    </div>
-                    <span class="login100-form-title p-b-59">
-                        Sign Up
-                    </span>
 
-                    <!-- Your form inputs and fields here -->
-                        <div style="justify-content: center">
-                            <div class="form-group col-12" data-validate="Name is required">
-                                <span class="label-input80">Full Name</span>
-                                <input class="input100" type="text" name="name" required placeholder="Name..." th:field="*{name}"/>
-                                <p th:errors="*{name}" class="text-danger"
+                <form class="loginForm" id="registerForm" method="post" th:object="${user}" style="height: 603px">
+
+                    <h3 class="login100-form-title p-b-59">
+                        Sign Up
+                    </h3>
+                    <div class="form-group col-12" data-validate="Name is required">
+                        <span class="label-input80">Full Name</span>
+                        <input class="input100" type="text" name="name" required placeholder="Name..." th:field="*{name}"/>
+                        <p th:errors="*{name}" class="text-danger"
                                    th:if="${#fields.hasErrors('name')}"></p>
-                                <span class="focus-input100"></span>
-                            </div>
-                            <div class="form-group col-12" data-validate="Valid email is required: ex@abc.xyz">
-                                <span class="label-input80">Email</span>
-                                <input class="input100" type="email" name="email" required placeholder="Email addess..." th:field="*{email}">
-                                <p th:errors="*{email}" class="text-danger"
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="form-group col-12" data-validate="Password is required">
+                        <span class="label-input80">Password</span>
+                        <input class="input100" type="text" name="passWord" placeholder="*************" required
+                               th:field="*{passWord}">
+                        <p th:errors="*{passWord}" class="text-danger"
+                           th:if="${#fields.hasErrors('passWord')}"></p>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="form-group col-12" data-validate="Valid email is required: ex@abc.xyz">
+                        <span class="label-input80">Email</span>
+                        <input class="input100" type="email" name="email" required placeholder="Email address..." th:field="*{email}">
+                        <p th:errors="*{email}" class="text-danger"
                                    th:if="${#fields.hasErrors('email')}"></p>
-                                <span class="focus-input100"></span>
-                            </div>
-                        </div>
-                    <div >
-                        <div class="form-group col-12" data-validate="Username is required">
-                            <span class="label-input80">Phone</span>
-                            <input class="input100" type="text" name="phone" required placeholder="phone..." th:field="*{phone}">
-                            <p th:errors="*{phone}" class="text-danger"
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="form-group col-12" data-validate="Username is required">
+                        <span class="label-input80">Phone</span>
+                        <input class="input100" type="text" name="phone" required placeholder="phone..." th:field="*{phone}">
+                        <p th:errors="*{phone}" class="text-danger"
                                th:if="${#fields.hasErrors('phone')}"></p>
-                            <span class="focus-input100"></span>
-                        </div>
-                        <div class="form-group col-12" data-validate="Password is required">
-                            <span class="label-input80">Password</span>
-                            <input class="input100" type="text" name="passWord" placeholder="*************" required
-                                   th:field="*{passWord}">
-                            <p th:errors="*{passWord}" class="text-danger"
-                               th:if="${#fields.hasErrors('passWord')}"></p>
-                            <span class="focus-input100"></span>
-                        </div>
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="form-group col-12" >
+                        <label for="dob" class="label-input80">Date of Birth</label>
+                        <input id="dob" class="input100" type="date" name="dob"  required
+                               th:field="*{dob}">
+                        <p th:errors="*{dob}" class="text-danger"
+                           th:if="${#fields.hasErrors('dob')}"></p>
+                        <span class="focus-input100"></span>
                     </div>
                     <div class="container-login100-form-btn">
                         <div class="wrap-login100-form-btn">

@@ -3,28 +3,33 @@ package com.cg.service.userService.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Builder
-public class UserListResponse {
+public class UserListResponse implements Validator {
     private Long id;
-
     private String name;
-
+    private String userName;
     private String email;
-    private String password;
-
     private String phone;
-
-    private LocalDate dob;
+    private String dob;
     private String avatar;
+    private String role;
+    private String type;
+    private String lock;
 
-    private String statusCustomer;
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return false;
+    }
 
-    private String eLock;
+    @Override
+    public void validate(Object target, Errors errors) {
 
+    }
 }
-

@@ -48,6 +48,36 @@ public class HomeController {
         return modelAndView;
     }
 
+
+    @GetMapping("/dashboard")
+    public ModelAndView dash() {
+        modelAndView.setViewName("dashboard");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/product")
+    public ModelAndView pro() {
+        modelAndView.setViewName("product");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/bill")
+    public ModelAndView bill() {
+        modelAndView.setViewName("bill");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+    @GetMapping("/user")
+    public ModelAndView user() {
+        modelAndView.setViewName("user");
+        ModelAndView modelAndView = Login();
+        modelAndView.addObject("someKey", "someValue");
+        return modelAndView;
+    }
+
     @GetMapping("/price")
     public ModelAndView price() {
         modelAndView.setViewName("price");
@@ -58,8 +88,7 @@ public class HomeController {
 
     public ModelAndView Login(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof UserDetails userDetails) {
             String username = userDetails.getUsername();
 
             // Tìm người dùng theo username
@@ -88,6 +117,6 @@ public class HomeController {
     }
     @GetMapping("/login")
     public String showLogin(){
-        return "login/login";
+        return "/login";
     }
 }

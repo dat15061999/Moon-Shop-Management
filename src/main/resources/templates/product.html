@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout.html :: header}"></th:block>
+<style>
+  th {
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  td{
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  option{
+    text-align: center; /* Căn nội dung trong th ra giữa */
+  }
+  @keyframes slideLeft {
+    0%{
+      transform: translateX(100%);
+    }
+    100%{
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideRight {
+    0%{
+      transform: translateX(-100%);
+    }
+    100%{
+      transform: translateX(0);
+    }
+  }
+  .main{
+    height: 332px;
+    margin-bottom: 10px  ;
+    position: relative;
+  }
+  #list-image{
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    display: flex;
+    border: 1px solid;
+  }
+  #list-image div{
+    flex: 1;
+  }
+  #list-image img {
+
+    object-fit: cover;
+    object-position: center;
+  }
+  .control{
+    position: absolute;
+    top: 33%;
+    font-size: 70px;
+    color: black;
+  }
+  .prev{
+    left: 16px;
+  }
+  .next{
+    right: 16px;
+  }
+  #img-feature{
+    width: 100%;
+    height: 100%;
+  }
+  #img-feature{
+    transition: 1s;
+    animation: slideLeft 1s ease-in-out forwards ;
+  }
+</style>
+<div class="container">
+  <div style="border-radius: 37px; background-color: white">    <h1 class="card-header" style="text-align: center">Nail Service</h1>
+  </div>
+  <br>
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 600px">
+      <div class="modal-content">
+        <div class="modal-header" style="display: flex;justify-content: center">
+          <h4 class="modal-title" id="staticBackdropLabel"  >Modal title</h4>
+          <!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="color"></button>-->
+        </div>
+        <div class="modal-body">
+          <form id="productForm"  >
+            <div class="form-group col-12" >
+              <label for="name">Name:</label>
+              <input style="border: 1px solid #aaa;" type="text" class="form-control" id="name" name="name" placeholder="Họ và tên"  oninput="validateNameProduct(this)" >
+              <label for="name"  id="nameError" class="error-message" style="color: red;"></label>
+            </div>
+            <div class="form-group col-12">
+              <label for="description">Description</label>
+              <input style="border: 1px solid #aaa;" type="text" class="form-control" id="description" placeholder="Mô tả sản phẩm" name="description" oninput="validateDescriptionProduct(this)" >
+              <label for="description" id="descriptionError" class="error-message" style="color: red;"></label>
+
+            </div>
+            <div class="form-group col-lg-12">
+              <label for="price">Price</label>
+              <input style="border: 1px solid #aaa;" type="text" class="form-control" id="price" placeholder="Gía tiền"  name="price" oninput="validatePriceProduct(this)" >
+              <label for="price" id="priceError" class="error-message" style="color: red;"></label>
+            </div>
+
+
+            <div>
+              <div >Image:</div>
+              <div id="images" class="row" style="display: flex; margin-left: 1px " ></div>
+              <label id="image" for="file" style="display: flex; flex-wrap: wrap; max-width: 19%">
+                <i class="fas fa-upload" style="font-size: 95px; margin: 5px"></i>
+              </label>
+              <input id="file" class="d-none" type="file" multiple="multiple"  accept="image/*" onchange="previewImage(event)">
+              <div id="imagesError" class="error-message" style="color: red;"></div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn "  id="save"  >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="showImagesList" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="showImagesListLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 600px">
+      <div class="modal-content">
+        <div class="modal-header" style="display: flex;justify-content: center">
+          <h4 class="modal-title" id="showImagesListLabel" style="margin-left: 206px">List Images</h4>
+          <i class="fas fa-times" style="margin-left: 201px; color: black" id="iconNone"></i>
+
+        </div>
+        <div class="modal-body">
+          <div id="main" style="margin-bottom: 10px">
+            <div id="notification" style="font-size: 50px; color: #f1aca7;text-align: center"></div>
+            <img id="img-feature" >
+          </div>
+          <div id="list-image" >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display: flex ; justify-content: space-evenly">
+      <div style="width: 20%;height: 65px">
+        <button style="background-color: #ea9797; margin: 12px; color: beige" type="button" class="btn   " data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="create">
+          Create Service
+        </button>
+      </div>
+      <nav
+              class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+              id="layout-navbar"
+      >
+        <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+          <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+            <i class="bx bx-menu bx-sm"></i>
+          </a>
+        </div>
+
+        <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+          <!-- Search -->
+          <div class="navbar-nav align-items-center">
+            <div class="nav-item d-flex align-items-center" style="width: 300px">
+              <input
+                      width="329px"
+                      type="search"
+                      class="form-control border-0 shadow-none"
+                      placeholder="Search..."
+                      aria-label="Search..."
+                      id ="search"
+              />
+            </div>
+          </div>
+          <!-- /Search -->
+
+        </div>
+      </nav>
+      <div id="priceRange1">
+        <div class="input-group"  style="margin: 12px;width: 157px;height: 40px">
+          <label for="priceRange" id="pri"></label><select class="form-control" id="priceRange">
+          <option value="0-50000000000" selected>----Choose----</option>
+          <option value="10000-100000">Dưới 100000 </option>
+          <option value="100001-500000">Trên 100000</option>
+          <option value="500001-1000000">Trên 500000</option>
+        </select>
+
+        </div>
+      </div>
+    </div>
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th style="width: 30px">No</th>
+        <th style="width: 150px">Name</th>
+        <th style="width: 150px">Description</th>
+        <th style="width: 150px">Image</th>
+        <th id="price-check" class="arrow arrow-up" style="width: 100px">
+          <span >Price &#9660;</span>
+        </th>
+        <th >Action</th>
+      </tr>
+      <tbody id="tBody">
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+      <nav aria-label="...">
+        <ul class="pagination" id="paginationProduct">
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="loading" class="loading hide">
+  <div class="loader"></div>
+</div>
+<th:block th:replace="~{layout.html :: footer}"></th:block>
+<script src="/myjs/product.js"></script>
+<script>
+
+
+</script>
+
+
+</html>
