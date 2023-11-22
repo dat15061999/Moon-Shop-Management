@@ -45,7 +45,6 @@ public class Image {
 
     public ImageResDTO toImageResDTO() {
         return new ImageResDTO()
-                .setId(id)
                 .setUrl(url)
                 ;
     }

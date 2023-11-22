@@ -83,11 +83,13 @@ page.commands.getAllProduct = async () => {
 }
 
 page.commands.render = (obj) => {
+    console.log(obj)
+    console.log(obj.imageList[0].url)
     return `
                 <div class="col-lg-4 col-md-6 col-sm-6 pb-1" >
                         <div class="product-item bg-light mb-4">
-                            <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="../img/${obj.imageList[0].url}" alt="">
+                            <div class="product-img position-relative overflow-hidden" >
+                                <img class="img-fluid w-100" src=${obj.imageList[0].url} style="width: 280px;height: 150px" alt="">
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="fa fa-shopping-cart"></i></a>

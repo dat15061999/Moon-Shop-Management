@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image,String> {
-    @Query("SELECT new com.cg.model.dto.ImageResDTO(i.id, i.url) FROM Image i WHERE i.product.id = :productId")
+    @Query("SELECT new com.cg.model.dto.ImageResDTO( i.url) FROM Image i WHERE i.product.id = :productId")
     List<ImageResDTO> findImagesByProductId(@Param("productId") Long productId);
     void deleteAllByProductId(Long id);
     @Modifying
