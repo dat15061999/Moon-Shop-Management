@@ -30,6 +30,20 @@ public class BillRestController {
                                            @RequestParam(defaultValue = "") String search){
         return new  ResponseEntity<>(billService.findAll(search,pageable),HttpStatus.OK);
     }
+    @PatchMapping("/paid/{id}")
+    public ResponseEntity<String> paidBill(@PathVariable Long id) {
+        billService.paidById(id);
+        return ResponseEntity.ok("ok");
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> find(@PathVariable Long id){
+        return  new ResponseEntity<>(billService.showEdit(id),HttpStatus.OK);
+    }
+    @PatchMapping("/unpaid/{id}")
+    public ResponseEntity<String> unpaidBill(@PathVariable Long id) {
+        billService.unpaidById(id);
+        return ResponseEntity.ok("ok");
+    }
 //    @PostMapping
 //    public ResponseEntity<?> create(@RequestBody BillCreateRequest billCreateRequest, BindingResult bindingResult){
 //        billCreateRequest.validate(billCreateRequest,bindingResult);

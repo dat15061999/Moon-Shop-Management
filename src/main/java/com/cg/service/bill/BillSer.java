@@ -43,9 +43,22 @@ public class BillSer {
                         .products(b.getBillDetailList().stream()
                                 .map(BillDetail::getProductName)
                                 .collect(Collectors.joining(", ")))
-                        .productAmount(b.getBillDetailList().stream()
-                                .map(BillDetail::getTotalAmount).toList().toString())
+                        .total(String.valueOf(b.getTotal()))
                         .build());
+    }
+    public void paidById(Long id){
+        Bill bill = findById(id);
+        bill.setEPayment(EPayment.PAID);
+        billRepository.save(bill);
+    }
+    public void unpaidById(Long id){
+        Bill bill = findById(id);
+        bill.setEPayment(EPayment.NONE);
+        billRepository.save(bill);
+    }
+    public Bill findById(Long id){
+        return billRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException
+                (String.format(AppMessage.ID_NOT_FOUND, "Bill", id)));
     }
 //    public Bill create(BillCreateRequest billCreateRequest){
 //        Bill bill = AppUtil.mapper.map(billCreateRequest, Bill.class);
@@ -77,32 +90,12 @@ public class BillSer {
 //        return billRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException
 //                (String.format(AppMessage.ID_NOT_FOUND, "Bill", id)));
 //    }
-//    public BillEditResponse showEdit(Long id){
-//        var bill = findById(id);
-//        var billEditResponse = AppUtil.mapper.map(bill,BillEditResponse.class);
-//        billEditResponse.setUsers(bill.getUser().getId());
-//        billEditResponse.setUserName(bill.getUser().getName());
-//
-//
-//        billEditResponse.setProductsId(bill.getBillDetailList()
-//                .stream().map(billProduct -> billProduct.getProduct().getId())
-//                .collect(Collectors.toList())
-//        );
-//        billEditResponse.setProductsPrice(bill.getBillDetailList()
-//                .stream().map(BillDetail::getProductPrice)
-//                .collect(Collectors.toList())
-//        );
-//        billEditResponse.se(bill.getBillDetailList()
-//                .stream().map(BillDetail::getProductPrice)
-//                .collect(Collectors.toList())
-//        );
-//
-//        billEditResponse.setProductsName(bill.getBillProducts()
-//                .stream().map(BillProduct::getProductName)
-//                .collect(Collectors.toList()));
-//
-//        return billEditResponse;
-//    }
+    public BillEditResponse showEdit(Long id){
+        var bill = findById(id);
+
+
+        return AppUtil.mapper.map(bill,BillEditResponse.class);
+    }
 //    public void update (BillEditRequest billEditRequest , Long id){
 //        var billDB = findById(id);
 //        billDB.setCustomerName(billEditRequest.getCustomerName());

@@ -13,29 +13,29 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart,Long> {
-    @Query("SELECT  new com.cg.model.dto.CartDetailResDTO(" +
-            "    cd.id,\n" +
-            "    cd.product.id,\n" +
-            "    cd.productName,\n" +
-            "    cd.productPrice,\n" +
-            "    i.url,\n" +
-            "    cd.quantity," +
-            "    cd.totalAmount )\n" +
-            "FROM \n" +
-            "\tCart c \n" +
+    @Query("SELECT new com.cg.model.dto.CartDetailResDTO(\n" +
+            " cd.id, \n" +
+            " cd.product.id,\n" +
+            " cd.productName,\n" +
+            " cd.productPrice,\n" +
+            " i.url,\n" +
+            " cd.quantity,\n" +
+            " cd.totalAmount )\n" +
+            " FROM \n" +
+            " Cart c \n" +
+            " join \n" +
+            " CartDetail cd \n" +
+            " on \n" +
+            "     c.id = cd.cart.id \n" +
             "join \n" +
-            "\tCartDetail cd \n" +
+            "      Product p\n" +
             "on \n" +
-            "    c.id = cd.cart.id \n" +
+            "     cd.product.id = p.id\n" +
             "join \n" +
-            "    Product p\n" +
+            "     Image i \n" +
             "on \n" +
-            "    cd.product.id = p.id\n" +
-            "join \n" +
-            "    Image i \n" +
-            "on \n" +
-            "    p.id = i.product.id\n" +
-            "where c.customer.id  = :idCustomer ")
+            "     p.poster.id = i.id\n" +
+            "where c.customer.id  = :idCustomer  group by cd.id")
      List<CartDetailResDTO> getAllByCustomer_Id(@Param("idCustomer") Long idCustomer);
 
     @Query("SELECT " +

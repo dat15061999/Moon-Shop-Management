@@ -95,7 +95,7 @@ page.commands.render = (obj) => {
                 <div class="col-lg-4 col-md-6 col-sm-6 pb-1" >
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden" >
-                                <img class="img-fluid w-100" src=${obj.imageList[0].url} style="width: 280px;height: 280px" alt="">
+                                <img class="img-fluid w-100" src=${obj.poster.url} style="width: 280px;height: 280px" alt="">
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="fa fa-shopping-cart"></i></a>
@@ -281,7 +281,7 @@ page.elements.btnCartToCheckout.on('click', async () => {
 page.commands.renderCart = (obj) => {
     return `
     <tr id="cd_${obj.idCartDetail}">
-             <td class="align-middle"><img src="/img/${obj.url}" alt="" style="width: 50px;"></td>
+             <td class="align-middle"><img src=${obj.url} alt="" style="width: 50px;"></td>
              <td class="align-middle">
                  ${obj.productName}
              </td>           
@@ -339,13 +339,13 @@ page.commands.handleClickButtonSearch = (productID) => {
         url: page.url.getProductById + productID,
     })
         .done(async (data) => {
-
+            console.log(data)
             page.elements.nameProduct.text(data.productName)
             // page.elements.viewProduct
             page.elements.priceProduct.text(data.productPrice + "$")
             page.elements.totalAmount.text(data.productPrice + "$")
             page.elements.descriptionProduct.text(data.description)
-            page.elements.imageProduct.attr('src', "/img/" + data.imageList[0].url)
+            page.elements.imageProduct.attr('src',  data.poster.url)
             page.elements.amountIn.val(1);
             page.elements.idProduct.val(data.id)
 

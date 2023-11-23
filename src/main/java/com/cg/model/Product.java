@@ -44,6 +44,7 @@ public class Product {
                 .setProductName(productName)
                 .setScore(score)
                 .setDescription(description)
+                .setPoster(poster)
                 .setImageList(imageList.stream().map(Image::toImageResDTO).collect(Collectors.toList()));
     }
 }

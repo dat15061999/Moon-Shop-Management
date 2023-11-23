@@ -7,11 +7,13 @@ import com.cg.model.CartDetail;
 import com.cg.model.enums.EPayment;
 import com.cg.repository.BillDetailRepository;
 import com.cg.repository.BillRepository;
+import com.cg.repository.CartDetailRepository;
 import com.cg.service.cart.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,9 @@ public class BillService implements IBillService {
 
     @Autowired
     private BillDetailRepository billDetailRepository;
+
+    @Autowired
+    private CartDetailRepository cartDetailRepository;
 
     @Override
     public List<Bill> findAll() {
@@ -69,6 +74,8 @@ public class BillService implements IBillService {
 
     @Override
     public Bill saveBillFromCart(Cart cart) {
+        BigDecimal total = cartDetailRepository.getTotalAmountByCustomer_Id(cart.getId());
+
         Bill bill = new Bill();
 
         bill.setCreate_at(cart.getCreate_at());
@@ -77,7 +84,11 @@ public class BillService implements IBillService {
 
         bill.setUserName(cart.getCustomer().getName());
 
+        bill.setTotal(total);
+
         bill.setEPayment(EPayment.NONE);
+
+        bill.setDeleted(false);
 
         billRepository.save(bill);
 

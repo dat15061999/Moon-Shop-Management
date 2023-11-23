@@ -18,7 +18,7 @@ public class BillListResponse implements Validator {
     private String userName;
     private String createAt;
     private String products;
-    private String productAmount;
+    private String total;
     private String user;
     private String ePayment;
     @Override

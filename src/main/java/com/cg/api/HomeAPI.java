@@ -52,6 +52,8 @@ public class HomeAPI {
 
                         product.getProductPrice(),
 
+                        product.getPoster(),
+
                         imageRepository.findImagesByProductId(product.getId())))
                 .collect(Collectors.toList());
 
@@ -183,7 +185,9 @@ public class HomeAPI {
         Bill bill = billService.saveBillFromCart(cart.get());
 
         for (int i = 0 ; cartDetails.size()-i > 0; i++) {
+
             billService.saveBillDetailFromDetail(bill, cartDetails.get(i));
+
             cartService.deleteCartDetail(cartDetails.get(i).getId());
         }
 

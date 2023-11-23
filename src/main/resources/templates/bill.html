@@ -18,115 +18,115 @@
   </div>
   <br>
   <!-- Modal -->
-<!--  <div class="modal fade bd-example-modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"-->
-<!--       aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog modal-lg" >-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header" style="display: flex;justify-content: center">-->
-<!--          <h4 class="modal-title" id="staticBackdropLabel"  >Modal title</h4>-->
-<!--          &lt;!&ndash;                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="color"></button>&ndash;&gt;-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <form id="billForm"  >-->
-<!--            <div class="form-group row col-12 ">-->
-<!--              <label for="users">User</label>-->
-<!--              <select style="width: 100%!important; padding: .375rem .75rem!important;"-->
-<!--                      class="js-example-basic-single form-control" id="users" name="users" >-->
-<!--                <option style="color: #697a8d;" value="" selected>Mời chọn:</option>-->
-<!--                <option th:each="user : ${users}" th:value="${user.value}" th:text="${user.getName}"/>-->
-<!--              </select>-->
-<!--              <label for="users" id="usersError" class="error-message" style="color: red;"></label>-->
-<!--            </div>-->
-<!--            <div class="form-group row" style="display: flex">-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="customerName">Customer Name:</label>-->
-<!--                <input type="text" class="form-control" id="customerName" name="customerName" placeholder="Họ và tên" >-->
-<!--                <label for="customerName" id="customerNameError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="customerPhone">Customer Phone:</label>-->
-<!--                <input type="tel" class="form-control" id="customerPhone" name="customerPhone" placeholder="Số điện thoại" >-->
-<!--                <label for="customerPhone" id="customerPhoneError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group row" style="display: flex">-->
-<!--              <div class="form-group col-6" >-->
-<!--                <label for="customerEmail">Customer Email:</label>-->
-<!--                <input type="text" class="form-control" id="customerEmail" name="customerEmail" placeholder="Email"   >-->
-<!--                <label for="customerEmail" id="customerEmailError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="customerQuantity">Customer Quantity:</label>-->
-<!--                <input type="text" class="form-control" id="customerQuantity" name="customerQuantity" placeholder="Số lượng khách" oninput="validateCustomerQuantity()">-->
-<!--                <label for="customerQuantity" id="customerQuantityError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
+  <div class="modal fade bd-example-modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" >
+      <div class="modal-content">
+        <div class="modal-header" style="display: flex;justify-content: center">
+          <h4 class="modal-title" id="staticBackdropLabel"  >Modal title</h4>
+          <!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="color"></button>-->
+        </div>
+        <div class="modal-body">
+          <form id="billForm"  >
+            <div class="form-group row col-12 ">
+              <label for="users">User</label>
+              <select style="width: 100%!important; padding: .375rem .75rem!important;"
+                      class="js-example-basic-single form-control" id="users" name="users" >
+                <option style="color: #697a8d;" value="" selected>Mời chọn:</option>
+                <option th:each="user : ${users}" th:value="${user.value}" th:text="${user.getName}"/>
+              </select>
+              <label for="users" id="usersError" class="error-message" style="color: red;"></label>
+            </div>
+            <div class="form-group row" style="display: flex">
+              <div class="form-group col-6">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" class="form-control" id="customerName" name="customerName" placeholder="Họ và tên" >
+                <label for="customerName" id="customerNameError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="customerPhone">Customer Phone:</label>
+                <input type="tel" class="form-control" id="customerPhone" name="customerPhone" placeholder="Số điện thoại" >
+                <label for="customerPhone" id="customerPhoneError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
+            <div class="form-group row" style="display: flex">
+              <div class="form-group col-6" >
+                <label for="customerEmail">Customer Email:</label>
+                <input type="text" class="form-control" id="customerEmail" name="customerEmail" placeholder="Email"   >
+                <label for="customerEmail" id="customerEmailError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="customerQuantity">Customer Quantity:</label>
+                <input type="text" class="form-control" id="customerQuantity" name="customerQuantity" placeholder="Số lượng khách" oninput="validateCustomerQuantity()">
+                <label for="customerQuantity" id="customerQuantityError" class="error-message" style="color: red;"></label>
+              </div>
 
-<!--            </div>-->
-<!--            <div class="form-group row" style="display: flex">-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="products">Service</label>-->
-<!--                <select style="width: 100%!important; padding: .375rem .75rem!important;"-->
-<!--                        class="js-example-basic-multiple form-control" id="products" name="products"-->
-<!--                        multiple="multiple" oninput="validateForm()">-->
-<!--                  <option th:each="product : ${products}" th:value="${product.value}"-->
-<!--                          th:text="${product.name}"/>-->
-<!--                </select>-->
-<!--                <label for="products" id="productsError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="combos">Package</label>-->
-<!--                <select style="width: 100%!important; padding: .375rem .75rem!important;"-->
-<!--                        class="js-example-basic-multiple form-control" id="combos" name="combos"-->
-<!--                        multiple="multiple" oninput="validateForm()">-->
-<!--                  <option th:each="combo : ${combos}" th:value="${combo.value}"-->
-<!--                          th:text="${combo.name}"/>-->
-<!--                </select>-->
-<!--                <label for="combos" id="combosError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group row" style="display: flex">-->
-<!--              <div class="form-group col-6" >-->
-<!--                <label for="priceProducts">Price Service:</label>-->
-<!--                <input type="text" class="form-control" id="priceProducts" disabled name="priceProducts" placeholder="Tổng tiền theo sản phẩm"  >-->
-<!--                <label for="priceProducts" id="priceProductsError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--              <div class="form-group col-6" >-->
-<!--                <label for="priceCombos">Price Package:</label>-->
-<!--                <input type="text" class="form-control" id="priceCombos" disabled name="priceCombos" placeholder="Tổng tiền theo gói"  >-->
-<!--                <label for="priceCombos" id="priceCombosError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--            </div>-->
+            </div>
+            <div class="form-group row" style="display: flex">
+              <div class="form-group col-6">
+                <label for="products">Service</label>
+                <select style="width: 100%!important; padding: .375rem .75rem!important;"
+                        class="js-example-basic-multiple form-control" id="products" name="products"
+                        multiple="multiple" oninput="validateForm()">
+                  <option th:each="product : ${products}" th:value="${product.value}"
+                          th:text="${product.name}"/>
+                </select>
+                <label for="products" id="productsError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="combos">Package</label>
+                <select style="width: 100%!important; padding: .375rem .75rem!important;"
+                        class="js-example-basic-multiple form-control" id="combos" name="combos"
+                        multiple="multiple" oninput="validateForm()">
+                  <option th:each="combo : ${combos}" th:value="${combo.value}"
+                          th:text="${combo.name}"/>
+                </select>
+                <label for="combos" id="combosError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
+            <div class="form-group row" style="display: flex">
+              <div class="form-group col-6" >
+                <label for="priceProducts">Price Service:</label>
+                <input type="text" class="form-control" id="priceProducts" disabled name="priceProducts" placeholder="Tổng tiền theo sản phẩm"  >
+                <label for="priceProducts" id="priceProductsError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6" >
+                <label for="priceCombos">Price Package:</label>
+                <input type="text" class="form-control" id="priceCombos" disabled name="priceCombos" placeholder="Tổng tiền theo gói"  >
+                <label for="priceCombos" id="priceCombosError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
 
-<!--            <div class="form-group row" style="display: flex">-->
-<!--              <div class="form-group col-6" >-->
-<!--                <label for="priceBill">Price:</label>-->
-<!--                <input type="text" class="form-control" id="priceBill" name="priceBill" disabled placeholder="Tổng tiền"  >-->
-<!--                <label for="priceBill" id="priceBillError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--              <div class="form-group col-6">-->
-<!--                <label for="appointmentTime">Appointment Time:</label>-->
-<!--                <input type="datetime-local" class="form-control" id="appointmentTime" name="appointmentTime" oninput="validateAppointmentTime()">-->
-<!--                <label for="appointmentTime" id="appointmentTimeError" class="error-message" style="color: red;"></label>-->
-<!--              </div>-->
-<!--            </div>-->
+            <div class="form-group row" style="display: flex">
+              <div class="form-group col-6" >
+                <label for="priceBill">Price:</label>
+                <input type="text" class="form-control" id="priceBill" name="priceBill" disabled placeholder="Tổng tiền"  >
+                <label for="priceBill" id="priceBillError" class="error-message" style="color: red;"></label>
+              </div>
+              <div class="form-group col-6">
+                <label for="appointmentTime">Appointment Time:</label>
+                <input type="datetime-local" class="form-control" id="appointmentTime" name="appointmentTime" oninput="validateAppointmentTime()">
+                <label for="appointmentTime" id="appointmentTimeError" class="error-message" style="color: red;"></label>
+              </div>
+            </div>
 
-<!--            <div class="modal-footer">-->
-<!--              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
-<!--              <button type="submit" class="btn "  id="save"  >Save changes</button>-->
-<!--            </div>-->
-<!--          </form>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn "  id="save"  >Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="card">
     <div style="display: flex ; justify-content: space-evenly">
-<!--      <div style="width: 20%;height: 65px">-->
-<!--        <button style="background-color: #ea9797; margin: 12px; color: beige" type="button" class="btn   " data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="create">-->
-<!--          Create Bill-->
-<!--        </button>-->
-<!--      </div>-->
+      <div style="width: 20%;height: 65px">
+        <button style="background-color: #ea9797; margin: 12px; color: beige" type="button" class="btn   " data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="create">
+          Create Bill
+        </button>
+      </div>
       <nav
               class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"

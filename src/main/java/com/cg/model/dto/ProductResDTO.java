@@ -22,14 +22,16 @@ public class ProductResDTO {
     private String description;
     private float score;
     private BigDecimal productPrice;
+    private Image poster;
     private List<ImageResDTO> imageList;
 
-    public ProductResDTO(Long id, String productName, String description, float score, BigDecimal productPrice,  List<ImageResDTO> imageList) {
+    public ProductResDTO(Long id, String productName, String description, float score, BigDecimal productPrice,Image poster,  List<ImageResDTO> imageList) {
         this.id = id;
         this.productName = productName;
         this.description = description;
         this.score = score;
         this.productPrice = productPrice;
+        this.poster = poster;
         this.imageList = imageList;
     }
 }

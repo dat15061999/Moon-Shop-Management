@@ -47,7 +47,8 @@ async function getList(){
         ...pageable,
         ...result
     };
-    genderPagination();
+    console.log(result.content)
+    // genderPagination();
     renderTBody(result.content);
 }
 const genderPagination = () => {
@@ -116,7 +117,10 @@ const genderPagination = () => {
         };
     }
 }
-
+const findById = async (id) => {
+    const response = await fetch('/api/bills/' + id);
+    return await response.json();
+}
 function renderTBody(items) {
     let str = '';
     if (Array.isArray(items)) {
@@ -130,25 +134,23 @@ function renderTBody(items) {
 let itemIdUser= 0;
 function renderItemStr(item) {
     itemIdUser= item.id
-    var deleteButtonStyle = (item.epayment === "PAID") ? 'display: none;' : '';
+    console.log(item)
     return `<tr>
                     <td>
                         ${item.id}
                     </td>
                     <td >
-                       <span onmouseover="showTooltip(this)" data-id="${item.id}" id="billDB"> ${item.customerName}</span>
+                        ${item.userName}
                     </td>
                     <td>
-                        ${item.customerQuantity}
+                        ${item.products}
                     </td>
                     <td>
-                        ${item.appointmentTime}
+                        ${formatCurrency(item.total)}
                     </td>
-                     <td>
-                        ${formatCurrency(item.price)}
-                    </td>
+                     
                     <td onclick="payment(${item.id})">
-                        <div id="divPayment" style="border: ${item.epayment==="PAID" ? '1px solid #e9d9d9' : ' '};background-color: ${item.epayment==="PAID" ? '#f7c250' : ''};padding: 2px; border-radius: 12px;">
+                        <div id="divPayment" style="border: ${item.epayment === "PAID" ? '1px solid #e9d9d9' : ' '};background-color: ${item.epayment === "PAID" ? '#f7c250' : ''};padding: 2px; border-radius: 12px;">
                         ${item.epayment}
                         </div>
                     </td>
@@ -156,12 +158,12 @@ function renderItemStr(item) {
                         <a class="btn edit" data-id="${item.id}" onclick="onShowEdit(${item.id})" id="edit" style="padding: 0;     width: 21px;">
                             <i class="fa-regular fa-pen-to-square text-primary"></i>
                         </a>
-                        <a  class="btn delete" id="deleteBill" data-id="${item.id}" onclick="deleteItem(${item.id})" id="delete" style="padding-right: 5px; width: 47px;${deleteButtonStyle}""
-                            >
-                            <i class="fa-regular fa-trash-can text-danger"></i>
-                        </a>
+                        
                     </td>
                 </tr>`
+}
+function formatCurrency(number) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
 }
 async function deleteItem(id){
 
@@ -224,90 +226,90 @@ searchInput.addEventListener('search', () => {
 });
 
 
-// async function payment(id){
-//     const billPayment = await findById(id);
-//     console.log(billPayment)
-//     if(billPayment.epayment === "UNPAID"){
-//         const { isConfirmed } = await Swal.fire({
-//             title: 'Xác nhận thanh toán',
-//             text: 'Thanh toán?',
-//             icon: 'warning',
-//             showCancelButton: true,
-//             confirmButtonText: 'Đồng ý',
-//             cancelButtonText: 'Hủy',
-//         });
-//         if (!isConfirmed) {
-//             return; // Người dùng đã hủy xóa
-//         }
-//         const response = await fetch(`/api/bills/paid/${id}`, {
-//             method: 'PATCH',
-//         });
-//
-//         if (response.ok) {
-//             Swal.fire({
-//                 title: 'Đang xử lý',
-//                 text: 'Vui lòng chờ...',
-//                 willOpen: () => {
-//                     Swal.showLoading();
-//                 },
-//                 timer: 2000, // Đợi 2 giây (2000ms)
-//                 showCancelButton: false,
-//                 showConfirmButton: false,
-//                 allowOutsideClick: false
-//             }).then(async (result) => {
-//                 if (result.dismiss === Swal.DismissReason.timer) {
-//                     await   Swal.fire({
-//                         text: 'Đã thanh toán.',
-//                         icon: 'success',
-//                         showConfirmButton: false,
-//                         position: 'top-start',
-//                         timer: 900
-//                     })
-//                 }
-//                 await getList();
-//             });
-//         }
-//     } else {
-//         const response = await fetch(`/api/bills/unpaid/${id}`, {
-//             method: 'PATCH',
-//         });
-//         const { isConfirmed } = await Swal.fire({
-//             title: 'Xác nhận chưa thanh toán',
-//             text: 'Hủy thanh toán ?',
-//             icon: 'warning',
-//             showCancelButton: true,
-//             confirmButtonText: 'Đồng ý',
-//             cancelButtonText: 'Hủy',
-//         });
-//         if (!isConfirmed) {
-//             return; // Người dùng đã hủy xóa
-//         }
-//         if (response.ok) {
-//             Swal.fire({
-//                 title: 'Đang xử lý',
-//                 text: 'Vui lòng chờ...',
-//                 willOpen: () => {
-//                     Swal.showLoading();
-//                 },
-//                 timer: 2000, // Đợi 2 giây (2000ms)
-//                 showCancelButton: false,
-//                 showConfirmButton: false,
-//                 allowOutsideClick: false
-//             }).then( async (result) => {
-//                 if (result.dismiss === Swal.DismissReason.timer) {
-//                     await    Swal.fire({
-//                         text: 'Chưa thanh toán.',
-//                         icon: 'success',
-//                         showConfirmButton: false,
-//                         position: 'top-start',
-//                         timer: 900
-//                     })
-//                 }
-//                 await getList();
-//             });
-//         }
-//     }
-// }
+async function payment(id){
+    const billPayment = await findById(id);
+    console.log(billPayment)
+    if(billPayment.epayment === "NONE"){
+        const { isConfirmed } = await Swal.fire({
+            title: 'Xác nhận thanh toán',
+            text: 'Thanh toán?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+        });
+        if (!isConfirmed) {
+            return; // Người dùng đã hủy xóa
+        }
+        const response = await fetch(`/api/bills/paid/${id}`, {
+            method: 'PATCH',
+        });
+
+        if (response.ok) {
+            Swal.fire({
+                title: 'Đang xử lý',
+                text: 'Vui lòng chờ...',
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+                timer: 2000, // Đợi 2 giây (2000ms)
+                showCancelButton: false,
+                showConfirmButton: false,
+                allowOutsideClick: false
+            }).then(async (result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    await   Swal.fire({
+                        text: 'Đã thanh toán.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        position: 'top-start',
+                        timer: 900
+                    })
+                }
+                await getList();
+            });
+        }
+    } else {
+        const response = await fetch(`/api/bills/unpaid/${id}`, {
+            method: 'PATCH',
+        });
+        const { isConfirmed } = await Swal.fire({
+            title: 'Xác nhận chưa thanh toán',
+            text: 'Hủy thanh toán ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+        });
+        if (!isConfirmed) {
+            return; // Người dùng đã hủy xóa
+        }
+        if (response.ok) {
+            Swal.fire({
+                title: 'Đang xử lý',
+                text: 'Vui lòng chờ...',
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+                timer: 2000, // Đợi 2 giây (2000ms)
+                showCancelButton: false,
+                showConfirmButton: false,
+                allowOutsideClick: false
+            }).then( async (result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    await    Swal.fire({
+                        text: 'Chưa thanh toán.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        position: 'top-start',
+                        timer: 900
+                    })
+                }
+                await getList();
+            });
+        }
+    }
+}
 
 
 
