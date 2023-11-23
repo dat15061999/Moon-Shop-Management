@@ -50,6 +50,7 @@ page.elements.nameCustomer = $('#name');
 page.elements.emailCustomer = $('#email');
 page.elements.phoneCustomer = $('#phone');
 page.elements.dobCustomer = $('#dob');
+page.elements.imgCustomer = $('#imgCustomer')
 
 page.elements.btnUpdateCustomer = $('#btn-update-customer');
 page.elements.frmUpdateCustomer = $('#frmCustomer');
@@ -64,6 +65,8 @@ page.elements.btnBill = $('#btnAddBill');
 page.elements.btnCartToCheckout = $('#btn-to-checkout');
 
 page.elements.frmBill = $('#frmAddToBIll');
+
+page.elements.checkBill = $('#check');
 
 let productID = 0;
 
@@ -154,6 +157,9 @@ page.commands.renderCustomer = () => {
     })
         .done(async (data) => {
 
+            console.log(data)
+            page.elements.imgCustomer.attr('src',data.avatar.url);
+
             page.elements.nameCustomer.val(data.name);
 
             page.elements.emailCustomer.val(data.email);
@@ -231,11 +237,7 @@ page.commands.updateCustomer = async () => {
 //
 page.elements.btnCartToCheckout.on('click', async ()=>{
 
-    await $.ajax({
-        url: "http://localhost:8081/home/checkout"
-    });
-    await page.commands.renderCartToBillCheckout();
-
+    window.location.assign("/home/checkoutBill")
 
 })
 
@@ -423,8 +425,13 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
     await page.commands.renderCartToBillCheckout();
 }
 //bill
+
 page.elements.btnBill.on('click', async () => {
-   await page.commands.createBill();
+    if (page.elements.checkBill.val() === 'true') {
+    await page.commands.createBill();
+    } else {
+        AppUtils.showError("Bạn chưa xác nhận tại giỏ hàng!")
+    }
 })
 page.commands.createBill =async () =>{
     const amountProduct = await $.ajax({
@@ -503,4 +510,7 @@ $(async () => {
     await page.commands.handleClick();
     await page.commands.countCartDetailByCustomerID();
     await page.commands.renderCustomerToPageCheckOut();
+    if (page.elements.checkBill.val() === 'true') {
+       await page.commands.renderCartToBillCheckout();
+    }
 })

@@ -61,6 +61,7 @@ public class Customer {
                 .setEmail(email)
                 .setPhone(phone)
                 .setDob(dob)
+                .setAvatar(avatar)
                 ;
     }
 }

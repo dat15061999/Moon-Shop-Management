@@ -4,16 +4,10 @@ import com.cg.model.Customer;
 import com.cg.service.userService.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.util.Optional;
 
 @Controller
@@ -21,6 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class HomeController {
     private final UserService userService;
+
     @GetMapping("")
     public ModelAndView index() {
         ModelAndView view = new ModelAndView("index");
@@ -28,22 +23,26 @@ public class HomeController {
         view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
+
     @GetMapping("/shop")
-    public ModelAndView showShop(){
+    public ModelAndView showShop() {
         ModelAndView view = new ModelAndView("shop");
         view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
 
-    @GetMapping("/cart")
-    public String showCart(){
-        return "cart";
+    @GetMapping("/order")
+    public ModelAndView showCart() {
+        ModelAndView view = new ModelAndView("order");
+        view.addObject("customer", userService.getCurrentCustomer().get());
+        return view;
     }
 
     @GetMapping("/detail")
-    public String showDetail(){
+    public String showDetail() {
         return "detail";
     }
+
     private final ModelAndView modelAndView = new ModelAndView();
 
 
@@ -63,6 +62,7 @@ public class HomeController {
         modelAndView.addObject("someKey", "someValue");
         return modelAndView;
     }
+
     @GetMapping("/product")
     public ModelAndView pro() {
         modelAndView.setViewName("product");
@@ -70,6 +70,7 @@ public class HomeController {
         modelAndView.addObject("someKey", "someValue");
         return modelAndView;
     }
+
     @GetMapping("/bill")
     public ModelAndView bill() {
         modelAndView.setViewName("bill");
@@ -77,6 +78,7 @@ public class HomeController {
         modelAndView.addObject("someKey", "someValue");
         return modelAndView;
     }
+
     @GetMapping("/user")
     public ModelAndView user() {
         modelAndView.setViewName("user");
@@ -85,8 +87,12 @@ public class HomeController {
         return modelAndView;
     }
 
-    public ModelAndView Login(){
+
+    public ModelAndView Login() {
+        // Tìm người dùng theo username
         Optional<Customer> user = userService.getCurrentCustomer();
+
+
         if (user.isPresent()) {
             modelAndView.addObject("loggedIn", true);
             modelAndView.addObject("user", user.get());
@@ -95,11 +101,12 @@ public class HomeController {
         }
         return modelAndView;
     }
+
+
     @GetMapping("/contact")
-    public ModelAndView showContact(HttpSession session){
+    public ModelAndView showContact(HttpSession session) {
         ModelAndView view = new ModelAndView("contact");
-        Long id = (Long) session.getAttribute("idCustomer");
-        view.addObject("customerID", id);
+        view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }
 
@@ -107,11 +114,20 @@ public class HomeController {
     public ModelAndView showCheckout() {
         ModelAndView view = new ModelAndView("checkout");
         view.addObject("customer", userService.getCurrentCustomer().get());
+        view.addObject("check", false);
+        return view;
+    }
+
+    @GetMapping("/checkoutBill")
+    public ModelAndView showCheckoutToBill() {
+        ModelAndView view = new ModelAndView("checkout");
+        view.addObject("customer", userService.getCurrentCustomer().get());
+        view.addObject("check", true);
         return view;
     }
 
     @GetMapping("/login")
-    public String showLogin(){
+    public String showLogin() {
         return "/login";
     }
 
