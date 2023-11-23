@@ -2,13 +2,14 @@ const page = {
     url: {
         getAllProducts: AppUtils.BASE_PRODUCT_API,
         getProductById: AppUtils.BASE_PRODUCT_API + "/",
-        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API ,
-        getAllCartList: AppUtils.BASE_All_CARTS_API ,
+        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API,
+        getAllCartList: AppUtils.BASE_All_CARTS_API,
         deleteProductFromCart: AppUtils.BASE_DELETE_PRODUCT_FROM_CART_API,
         countCartDetails: AppUtils.BASE_COUNT_CART_API,
         getCustomerById: AppUtils.BASE_GET_CUSTOMER_BY_ID_API,
         updateCustomerById: AppUtils.BASE_UPDATE_CUSTOMER_BY_ID_API,
-        createBillFromCart:AppUtils.BASE_CREATE_BILL,
+        createBillFromCart: AppUtils.BASE_CREATE_BILL,
+        getAllBill: AppUtils.BASE_ALL_BILL,
     },
     elements: {},
     loadData: {},
@@ -36,8 +37,7 @@ page.elements.amountIn = $('.amountClothes');
 page.elements.btnOpenCart = $('.btn-cart');
 page.elements.renderListCart = $('.renderCart');
 page.elements.modalCart = $('#modalCart');
-page.elements.plusCart = $('.btn-plus-cart');
-page.elements.minusCart = $('.btn-minus-cart');
+
 page.elements.countCartDetails = $('#show-count-cart-detail');
 page.elements.btnDeleteProFromCart = $('button.btn-delete');
 page.elements.renderCartOnCheckout = $('.renderCarts');
@@ -51,22 +51,26 @@ page.elements.emailCustomer = $('#email');
 page.elements.phoneCustomer = $('#phone');
 page.elements.dobCustomer = $('#dob');
 page.elements.imgCustomer = $('#imgCustomer')
-
 page.elements.btnUpdateCustomer = $('#btn-update-customer');
 page.elements.frmUpdateCustomer = $('#frmCustomer');
+
 //Page checkout
 page.elements.nameCustomerCheckout = $('#nameCheckout');
 page.elements.emailCustomerCheckout = $('#emailCheckout');
 page.elements.phoneCustomerCheckout = $('#phoneCheckout');
 page.elements.dobCustomerCheckout = $('#dobCheckout');
-
 page.elements.btnBill = $('#btnAddBill');
+//Page Order
+page.elements.renderOrder = $('#renderOrders')
+page.elements.btnShowBill = $('.btnShowBill')
+
 
 page.elements.btnCartToCheckout = $('#btn-to-checkout');
 
 page.elements.frmBill = $('#frmAddToBIll');
 
 page.elements.checkBill = $('#check');
+
 
 let productID = 0;
 
@@ -123,7 +127,38 @@ page.commands.render = (obj) => {
                    </div>
     `;
 }
+//render bill
+page.commands.renderBill = (obj) => {
+    return `
+                <tr id="bi_${obj.id}">
+                    <td class="align-middle"><h3>ABC0${obj.id}</h3></td>
+                    <td class="align-middle"><h3>${obj.date}</h3></td>
+                    <td class="align-middle"><h3>${obj.total}$</h3></td>
+                    <td class="align-middle">
+                        <button class="btn btn-sm btn-success btnShowBill"><i class="fas fa-tasks"
+                                                                                   style="font-size: 20px"></i></button>
+                    </td>
+                </tr>
+        `;
+}
+page.commands.renderBillPage = async () => {
 
+    page.elements.renderOrder.empty();
+
+    const listCart = await $.ajax({
+        url: page.url.getAllBill,
+        method: "GET"
+    });
+
+    listCart.forEach(item => {
+        const str = page.commands.renderBillPage(item);
+
+        page.elements.renderOrder.prepend(str);
+
+    });
+
+
+}
 
 page.elements.minus.on('click', function () {
     page.commands.changeClickPlusOrMinus();
@@ -158,7 +193,7 @@ page.commands.renderCustomer = () => {
         .done(async (data) => {
 
             console.log(data)
-            page.elements.imgCustomer.attr('src',data.avatar.url);
+            page.elements.imgCustomer.attr('src', data.avatar.url);
 
             page.elements.nameCustomer.val(data.name);
 
@@ -173,7 +208,7 @@ page.commands.renderCustomer = () => {
     page.elements.modalCustomer.modal('show');
 }
 // Update customer
-page.elements.btnUpdateCustomer.on('click',async ()=>{
+page.elements.btnUpdateCustomer.on('click', async () => {
     // page.elements.frmUpdateCustomer.trigger('submit');
     await page.commands.updateCustomer();
 })
@@ -221,7 +256,7 @@ page.commands.updateCustomer = async () => {
 
     }
     await $.ajax({
-        url: page.url.updateCustomerById ,
+        url: page.url.updateCustomerById,
         method: "PATCH",
         contentType: "application/json",
         data: JSON.stringify(data),
@@ -235,34 +270,34 @@ page.commands.updateCustomer = async () => {
 
 }
 //
-page.elements.btnCartToCheckout.on('click', async ()=>{
+page.elements.btnCartToCheckout.on('click', async () => {
 
     window.location.assign("/home/checkoutBill")
 
 })
 
 
-
 //Render list Cart
 page.commands.renderCart = (obj) => {
     return `
     <tr id="cd_${obj.idCartDetail}">
-             <td class="align-middle"><img src="/img/${obj.url}" alt="" style="width: 50px;">
+             <td class="align-middle"><img src="/img/${obj.url}" alt="" style="width: 50px;"></td>
+             <td class="align-middle">
                  ${obj.productName}
              </td>           
              <td class="align-middle">${obj.productPrice}$</td>
              <td class="align-middle">
                  <div class="input-group quantity mx-auto" style="width: 100px;">
                      <div class="input-group-btn">
-                         <button class="btn btn-sm btn-primary btn-minus" type="button">
+                         <button class="btn btn-sm btn-primary btn-minus-cart" type="button">
                              <i class="fa fa-minus"></i>
                          </button>
                      </div>
-                     <input type="text"
+                     <input type="text" id="quantityC"
                             class="form-control form-control-sm bg-secondary border-0 text-center"
                             value="${obj.quantity}" readonly>
                      <div class="input-group-btn">
-                         <button class="btn btn-sm btn-primary btn-plus" type="button">
+                         <button class="btn btn-sm btn-primary btn-plus-cart" type="button">
                              <i class="fa fa-plus"></i>
                          </button>
                      </div>
@@ -276,6 +311,27 @@ page.commands.renderCart = (obj) => {
     `
         ;
 }
+page.commands.handleClickCart =()=> {
+    $('button.btn-plus-cart').on('click',function (){
+        const idP = $(this).closest('tr').attr('id').replace('cd_','');
+        $('#quantityC').val(parseFloat($('#quantityC').val())+1);
+
+    });
+    $('button.btn-minus-cart').on('click',function (){
+        const idM = $(this).closest('tr').attr('id').replace('cd_','');
+        if ($('#quantityC').val() === '0') {
+            return;
+        }
+        $('#quantityC').val(parseFloat($('#quantityC').val())-1);
+
+    });
+}
+page.commands.changeTotalAmount= async (idCartDetail) => {
+    // const newTotal = await $.ajax({
+    //     url:
+    // })
+}
+
 
 // Modal product detail
 page.commands.handleClickButtonSearch = (productID) => {
@@ -319,12 +375,12 @@ page.commands.amountProsOnCart = () => {
 
 }
 //Render Customer to page checkout
-page.commands.renderCustomerToPageCheckOut = async ()=>{
+page.commands.renderCustomerToPageCheckOut = async () => {
     await $.ajax({
-        url: page.url.getCustomerById ,
+        url: page.url.getCustomerById,
         method: "GET"
     })
-        .done((data)=>{
+        .done((data) => {
             page.elements.nameCustomerCheckout.val(data.name);
 
             page.elements.emailCustomerCheckout.val(data.email);
@@ -342,7 +398,7 @@ page.commands.renderCartToBillCheckout = async () => {
     page.elements.renderCartOnCheckout.empty();
 
     const listCart = await $.ajax({
-        url: page.url.getAllCartList ,
+        url: page.url.getAllCartList,
         method: "GET"
     });
     let str = '';
@@ -363,7 +419,7 @@ page.commands.renderCartToBillCheckout = async () => {
 
     $('#subtotalCheckout').text(amount + "$");
 
-    $('#totalCheckout').text(amount  + "$");
+    $('#totalCheckout').text(amount + "$");
 
 }
 
@@ -381,10 +437,8 @@ page.commands.renderCartToBill = (item) => {
 page.commands.renderListProductsToCart = async () => {
     page.elements.renderListCart.empty();
 
-    let amount = 0;
-
     const listCart = await $.ajax({
-        url: page.url.getAllCartList ,
+        url: page.url.getAllCartList,
         method: "GET"
     });
 
@@ -398,6 +452,8 @@ page.commands.renderListProductsToCart = async () => {
     await page.commands.handleClickBtnDelete();
 
     page.commands.amountProsOnCart();
+
+    page.commands.handleClickCart();
 
     page.elements.modalCart.modal('show');
 }
@@ -428,12 +484,12 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
 
 page.elements.btnBill.on('click', async () => {
     if (page.elements.checkBill.val() === 'true') {
-    await page.commands.createBill();
+        await page.commands.createBill();
     } else {
         AppUtils.showError("Bạn chưa xác nhận tại giỏ hàng!")
     }
 })
-page.commands.createBill =async () =>{
+page.commands.createBill = async () => {
     const amountProduct = await $.ajax({
         url: page.url.countCartDetails
     })
@@ -445,7 +501,7 @@ page.commands.createBill =async () =>{
     }
 
     await $.ajax({
-        url:page.url.createBillFromCart,
+        url: page.url.createBillFromCart,
         method: "POST"
     })
     await page.commands.countCartDetailByCustomerID();
@@ -463,7 +519,7 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     const name = page.elements.nameProduct.text();
 
-    const price = page.elements.priceProduct.text().replace('$','');
+    const price = page.elements.priceProduct.text().replace('$', '');
 
     const totalAmount = parseFloat(page.elements.totalAmount.text().replace('$', ''));
 
@@ -471,8 +527,8 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     const data = {
         idProduct,
-        productName:name,
-        productPrice:price,
+        productName: name,
+        productPrice: price,
         amount: amountIn,
         totalAmount
     }
@@ -511,6 +567,6 @@ $(async () => {
     await page.commands.countCartDetailByCustomerID();
     await page.commands.renderCustomerToPageCheckOut();
     if (page.elements.checkBill.val() === 'true') {
-       await page.commands.renderCartToBillCheckout();
+        await page.commands.renderCartToBillCheckout();
     }
 })

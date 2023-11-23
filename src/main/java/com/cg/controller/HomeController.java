@@ -19,7 +19,6 @@ public class HomeController {
     @GetMapping("")
     public ModelAndView index() {
         ModelAndView view = new ModelAndView("index");
-
         view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
     }

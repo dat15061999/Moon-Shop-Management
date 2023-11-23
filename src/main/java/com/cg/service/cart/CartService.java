@@ -58,6 +58,11 @@ public class CartService implements ICartService{
     }
 
     @Override
+    public Optional<CartDetail> findByIdCartDetail(Long idCartDetail) {
+        return cartDetailRepository.findById(idCartDetail);
+    }
+
+    @Override
     public long existsByIdProduct(Long idProduct,Long idCustomer) {
         return cartRepository.existsByIdProduct(idProduct,idCustomer);
     }

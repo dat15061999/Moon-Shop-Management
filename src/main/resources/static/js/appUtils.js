@@ -8,6 +8,7 @@ class AppUtils {
     static BASE_GET_CUSTOMER_BY_ID_API = this.BASE_PRODUCT_API + '/customer';
     static BASE_UPDATE_CUSTOMER_BY_ID_API = this.BASE_PRODUCT_API + '/customer';
     static BASE_CREATE_BILL = this.BASE_PRODUCT_API + '/bill';
+    static BASE_ALL_BILL = this.BASE_PRODUCT_API + '/bill';
 
     static showSuccess = (text) => {
         Swal.fire({

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,11 +116,22 @@ public class HomeAPI {
     }
     @GetMapping("/cartDetail")
     public  ResponseEntity<?> getCountDetail(){
-        Long idCustomer = userService.getCurrentCustomer().get().getId();
+       Long idCustomer = userService.getCurrentCustomer().get().getId();
 
        Long countCartDetailByCustomer =  cartService.getCountDetail(idCustomer);
 
        return new ResponseEntity<>(countCartDetailByCustomer,HttpStatus.OK);
+    }
+    @PatchMapping("/cartDetail/{idCartDetail}")
+    public  ResponseEntity<?> changeTotalProductDetail(@PathVariable Long idCartDetail){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
+
+        Optional<CartDetail> cartDetail = cartService.findByIdCartDetail(idCartDetail);
+
+
+
+
+        return new ResponseEntity<>(cartDetail,HttpStatus.OK);
     }
 
     @GetMapping("/customer")
@@ -179,4 +191,13 @@ public class HomeAPI {
 
         return new ResponseEntity<>("ok",HttpStatus.OK);
     }
+    @GetMapping("/bill")
+    public  ResponseEntity<?> getAllBill(){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
+
+
+
+        return new ResponseEntity<>("ok",HttpStatus.OK);
+    }
+
 }

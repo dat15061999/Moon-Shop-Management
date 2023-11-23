@@ -13,6 +13,7 @@ public interface ICartService extends IGeneralService<Cart,Long> {
     List<CartDetailResDTO> getAllByCustomer_Id(Long idCustomer);
 
     Optional<Cart> findByIdCustomer(Long idCustomer);
+    Optional<CartDetail> findByIdCartDetail(Long idCartDetail);
 
     long existsByIdProduct(Long idProduct,Long idCustomer);
 
