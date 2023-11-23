@@ -268,7 +268,12 @@ async function createProduct(data) {
                 errorAddressElement.innerText = responseJSON.price;
                 errorAddressElement.style.color= "red"
             }
-
+            const errorPosterElement = document.getElementById("posterError");
+            if ("poster" in responseJSON) {
+                errorPosterElement.style.display = "block";
+                errorPosterElement.innerText = responseJSON.poster;
+                errorPosterElement.style.color= "red"
+            }
         }
     }
 }

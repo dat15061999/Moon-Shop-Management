@@ -41,12 +41,12 @@
     <div class="contents order-2 order-md-1">
 
         <div class="">
-            <div th:if="${param.error}">
-                <div class="alert alert-danger">Email, Mật khẩu không hợp lệ hoặc Tài khoản bị khóa .</div>
+            <div th:if="${param.error}"
+                 th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+                 style="background-color: #ff7272;height: 30px;justify-content: center;display: flex"
+            >
+                <span th:text="${errorMsg}">Wrong input!></span>
             </div>
-<!--            <div th:if="${param.success}">-->
-<!--                <div class="alert alert-danger">Đăng ký thành công .</div>-->
-<!--            </div>-->
             <div th:if="${param.logout}">
                 <script>
                     window.onload = (event) => {
@@ -91,9 +91,5 @@
 </div>
 </body>
 </html>
-<!--<script>-->
-<!--    document.getElementById("formLogin").addEventListener("click",(e)=>{-->
-<!--        e.preventDefault()-->
-<!--    })-->
-<!--</script>-->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

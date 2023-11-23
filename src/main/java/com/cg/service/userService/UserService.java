@@ -4,6 +4,7 @@ package com.cg.service.userService;
 
 import com.cg.exception.ResourceNotFoundException;
 import com.cg.model.Customer;
+import com.cg.model.Image;
 import com.cg.model.enums.ELock;
 import com.cg.model.enums.ERole;
 import com.cg.model.enums.EStatusCustomer;
@@ -41,9 +42,18 @@ public class UserService {
     private ImageRepository imageRepository;
     private CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    public Customer findByName(String name){
+      return   customerRepository.findByName(name);
+    }
+    public Customer findByEmail(String name){
+      return   customerRepository.findByEmail(name);
+    }
+    public Customer findByPhone(String name){
+      return   customerRepository.findByPhone(name);
+    }
 
     public Optional<Customer> findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(String loginName) {
-        return Optional.ofNullable(customerRepository.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(loginName, loginName, loginName)
+        return Optional.ofNullable(customerRepository.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(loginName,loginName,loginName)
                 .orElseThrow(() -> new ResourceNotFoundException
                         (String.format(AppMessage.ID_NOT_FOUND, "User"))));
     }
@@ -64,6 +74,7 @@ public class UserService {
                         .type(String.valueOf(e.getStatusCustomer()))
                         .lock(String.valueOf(e.getELock()))
                         .role(String.valueOf(e.getRole()))
+                        .avatar(e.getAvatar().getUrl())
                         .build());
     }
     public Customer findById(Long id){
@@ -72,10 +83,15 @@ public class UserService {
     }
     public UserEditResponse showEdit(Long id){
         var user = findById(id);
-        return AppUtil.mapper.map(user, UserEditResponse.class);
+        var userEditResponse = AppUtil.mapper.map(user,UserEditResponse.class);
+        userEditResponse.setAvatar(user.getAvatar().getUrl());
+        userEditResponse.setIdAvatar(user.getAvatar().getId());
+        return userEditResponse;
     }
     public Customer create(UserCreateRequest userCreateRequest){
         Customer user = AppUtil.mapper.map(userCreateRequest, Customer.class);
+        Image avatar = imageRepository.findById(userCreateRequest.getAvatar().getId()).get();
+        user.setAvatar(avatar);
         user.setPassWord(passwordEncoder.encode(userCreateRequest.getPassWord()));
         user.setDeleted(false);
         user.setELock(ELock.UNLOCK);
@@ -88,6 +104,9 @@ public class UserService {
         userDB.setName(userEditRequest.getName());
         userDB.setPhone(userEditRequest.getPhone());
         userDB.setDob(LocalDate.parse(userEditRequest.getDob()));
+        if(userEditRequest.getAvatar()!= null && userEditRequest.getAvatar().getId()!= null){
+            userDB.setAvatar(Image.builder().id(userEditRequest.getAvatar().getId()).build());
+        }
     }
 
     public void save(Customer customer){
@@ -120,15 +139,10 @@ public class UserService {
     public Optional<Customer> getCurrentCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-// Kiểm tra xem người dùng đã đăng nhập hay chưa
         if (authentication != null && authentication.isAuthenticated()) {
-            // Lấy thông tin người dùng đăng nhập hiện tại
             Object principal = authentication.getPrincipal();
-
-            // Kiểm tra xem principal có phải là một UserDetails không
             if (principal instanceof UserDetails userDetails) {
                 String username = userDetails.getUsername();
-                // Thực hiện xử lý với thông tin người dùng
                 return findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username);
             }
         }

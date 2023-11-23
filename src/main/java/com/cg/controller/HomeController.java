@@ -4,13 +4,14 @@ import com.cg.model.Customer;
 import com.cg.service.userService.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
@@ -28,7 +29,7 @@ public class HomeController {
         return view;
     }
     @GetMapping("/shop")
-    public ModelAndView showShop(HttpSession session){
+    public ModelAndView showShop(){
         ModelAndView view = new ModelAndView("shop");
         view.addObject("customer", userService.getCurrentCustomer().get());
         return view;
@@ -85,17 +86,13 @@ public class HomeController {
     }
 
     public ModelAndView Login(){
-
-
-            // Tìm người dùng theo username
-            Optional<Customer> user = userService.getCurrentCustomer();
-
-            if (user.isPresent()) {
-                modelAndView.addObject("loggedIn", true);
-                modelAndView.addObject("user", user.get());
-            } else {
-                modelAndView.addObject("loggedIn", false);
-            }
+        Optional<Customer> user = userService.getCurrentCustomer();
+        if (user.isPresent()) {
+            modelAndView.addObject("loggedIn", true);
+            modelAndView.addObject("user", user.get());
+        } else {
+            modelAndView.addObject("loggedIn", false);
+        }
         return modelAndView;
     }
     @GetMapping("/contact")
@@ -107,7 +104,7 @@ public class HomeController {
     }
 
     @GetMapping("/checkout")
-    public ModelAndView showCheckout(HttpSession session) {
+    public ModelAndView showCheckout() {
         ModelAndView view = new ModelAndView("checkout");
         view.addObject("customer", userService.getCurrentCustomer().get());
         return view;

@@ -22,7 +22,9 @@ public class UserEditResponse {
     private LocalDate dob;
 
     private String phone;
+    private String avatar;
 
+    private String idAvatar;
     private String eLock;
     private String eRole;
 }

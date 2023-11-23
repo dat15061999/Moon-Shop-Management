@@ -17,6 +17,7 @@ public class ProductSaveRequest implements Validator {
     private String price;
     private String description;
     private List<SelectOptionRequest> images;
+    private SelectOptionRequest poster;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -30,11 +31,14 @@ public class ProductSaveRequest implements Validator {
         String name = productSaveRequest.name;
         String description = productSaveRequest.description;
         String price = productSaveRequest.price;
+        SelectOptionRequest poster = productSaveRequest.poster;
 
         if (name.length() < 1) {
             errors.rejectValue("name", "name.length", "Tên phải có ít nhất là 1 ký tự");
         }
-
+        if ( poster.getId() == null) {
+            errors.rejectValue("poster", "poster.null", "Poster không được để trống.");
+        }
         if (description.length() < 1) {
             errors.rejectValue("description", "description.length", "Miêu tả chỉ phải có ít nhất là 1 ký tự");
         }

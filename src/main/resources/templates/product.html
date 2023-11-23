@@ -99,7 +99,17 @@
               <input style="border: 1px solid #aaa;" type="text" class="form-control" id="price" placeholder="Gía tiền"  name="price" oninput="validatePriceProduct(this)" >
               <label for="price" id="priceError" class="error-message" style="color: red;"></label>
             </div>
+            <div>
+              <div>Poster:</div>
+              <div>
+                <label id="poster" for="post" >
+                  <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>
+                </label>
+                <label for="post" id="posterError" class="error-message" style="color: red;"></label>
+                <input id="post" class="d-none" type="file" accept="image/*"   onchange="previewPoster(event)">
+              </div>
 
+            </div>
 
             <div>
               <div >Image:</div>

@@ -184,6 +184,9 @@ async function fetchUserData(userId) {
                 <p>Email: ${userData.email}</p>
                 <p>Phone: ${userData.phone}</p>
                 <p>Date of Birth: ${userData.dob}</p>
+                <p>Avatar:</p>  
+                <div style="display: flex;justify-content: center">
+                                    <img  src="${userData.avatar}" alt="User Avatar" style="width: 100px; height: 100px; ">              
                 </div>
             </div>`;
 }
@@ -249,8 +252,8 @@ userForm.onsubmit = async (e) => {
     data = {
         ...data,
         id: userSelected.id,
-        email
-        // avatar: { id: idPoster[0] },
+        email,
+        avatar: { id: idPoster[0] },
 
     }
     if (userSelected.id) {
@@ -271,7 +274,7 @@ document.getElementById('create').onclick = () => {
     onShowCreate();
 }
 const onShowCreate = () => {
-    // document.getElementById('poster').innerHTML = ' <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>'
+    document.getElementById('poster').innerHTML = ' <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>'
     clearForm();
     $('#staticBackdropLabel').text('Create User');
 
@@ -348,12 +351,12 @@ async function createUser(data) {
                 passWordErrorElement.innerText = responseJSON.passWord;
                 passWordErrorElement.style.color= "red"
             }
-            // const errorPosterElement = document.getElementById("posterError");
-            //             // if ("avatar" in responseJSON) {
-            //             //     errorPosterElement.style.display = "block";
-            //             //     errorPosterElement.innerText = responseJSON.avatar;
-            //             //     errorPosterElement.style.color= "red"
-            //             // }
+            const errorPosterElement = document.getElementById("posterError");
+                        if ("avatar" in responseJSON) {
+                            errorPosterElement.style.display = "block";
+                            errorPosterElement.innerText = responseJSON.avatar;
+                            errorPosterElement.style.color= "red"
+                        }
         }
     }
 }
@@ -368,18 +371,18 @@ const findById = async (id) => {
 const onShowEdit = async (id) => {
     clearForm();
     userSelected = await findById(id);
-    // const poster = document.getElementById("poster");
-    // const img = document.createElement('img');
+    const poster = document.getElementById("poster");
+    const img = document.createElement('img');
     $("#passWord").prop('disabled', true);
     $("#email").prop('disabled', true);
-    // img.src = userSelected.avatar;
-    // img.id = userSelected.idAvatar;
-    // img.style.width='150px';
-    // img.style.height='100px';
-    // if(userSelected.avatar){
-    //     document.getElementById("uploadIcon").style.display="none";
-    //     poster.append(img)
-    // }
+    img.src = userSelected.avatar;
+    img.id = userSelected.idAvatar;
+    img.style.width='150px';
+    img.style.height='100px';
+    if(userSelected.avatar){
+        document.getElementById("uploadIcon").style.display="none";
+        poster.append(img)
+    }
     $('#staticBackdropLabel').text('Edit User');
     $('#staticBackdrop').modal('show');
     $('#name').val(userSelected.name);
@@ -464,7 +467,12 @@ async function  editUser (data){
                 passWordErrorElement.innerText = responseJSON.passWord;
                 passWordErrorElement.style.color= "red"
             }
-
+            const errorPosterElement = document.getElementById("posterError");
+            if ("avatar" in responseJSON) {
+                errorPosterElement.style.display = "block";
+                errorPosterElement.innerText = responseJSON.avatar;
+                errorPosterElement.style.color= "red"
+            }
 
         }
     }
@@ -485,11 +493,11 @@ function clearForm() {
     // document.getElementById('userNameError').innerText = '';
     document.getElementById('name').style.border = '1px solid #d9dee3';
     document.getElementById("email").disabled= false;
-    // const posterEle = document.getElementById("poster")
-    // const posterChild = posterEle.querySelectorAll('img');
-    // for (let i = 0; i < posterChild.length; i++) {
-    //     posterEle.removeChild(posterChild[i])
-    // }
+    const posterEle = document.getElementById("poster")
+    const posterChild = posterEle.querySelectorAll('img');
+    for (let i = 0; i < posterChild.length; i++) {
+        posterEle.removeChild(posterChild[i])
+    }
     userForm.reset();
     userSelected = {};
 }
@@ -512,71 +520,72 @@ searchInput.addEventListener('search', () => {
 
 
 
-// async function previewAvatar(evt) {
-//
-//     if(evt.target.files.length === 0){
-//         return;
-//     }
-//     idPoster = [];
-//     posterError.textContent='';
-//
-//     saveButton.disabled = true;
-//
-//     const imgPost = document.getElementById("poster");
-//     const imageOld1 = imgPost.querySelectorAll('img');
-//     for (let i = 0; i < imageOld1.length; i++) {
-//         imgPost.removeChild(imageOld1[i])
-//     }
-//     const files = evt.target.files
-//     for (let i = 0; i < files.length; i++) {
-//         const file = files[i];
-//         await previewAvatarFile(file, i);
-//         if (file) {
-//             const formData = new FormData();
-//             formData.append("poster", file);
-//             formData.append("fileType", "image");
-//             try {
-//                 const response = await fetch("/api/files/posters", {
-//                     method: "POST",
-//                     body: formData,
-//                 });
-//                 if (response.ok) {
-//                     const result = await response.json();
-//                     if (result) {
-//                         const id = result.id;
-//                         idPoster.push(id);
-//                     } else {
-//                         console.error('Image ID not found in the response.');
-//                     }
-//                 } else {
-//                     console.error('Failed to upload image:', response.statusText);
-//                 }
-//             } catch (error) {
-//                 console.error('An error occurred:', error);
-//             }
-//         }
-//     }
-//     saveButton.disabled = false;
-//
-// }
-//
-//
-// async function previewAvatarFile(file) {
-//     const reader = new FileReader();
-//
-//     reader.onload = function () {
-//         const imgPost = document.getElementById("poster");
-//         const img = document.createElement('img');
-//         img.src = reader.result;
-//         img.classList.add('avatar-previews');
-//         imgPost.append(img);
-//         const uploadIcon = document.getElementById('uploadIcon');
-//         if (uploadIcon) {
-//             uploadIcon.style.display = 'none';
-//         }
-//     };
-//     reader.readAsDataURL(file);
-// }
+async function previewAvatar(evt) {
+
+    if(evt.target.files.length === 0){
+        return;
+    }
+    idPoster = [];
+    posterError.textContent='';
+
+    saveButton.disabled = true;
+
+    const imgPost = document.getElementById("poster");
+    const imageOld1 = imgPost.querySelectorAll('img');
+    for (let i = 0; i < imageOld1.length; i++) {
+        imgPost.removeChild(imageOld1[i])
+    }
+    const files = evt.target.files
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file) {
+            const formData = new FormData();
+            formData.append("poster", file);
+            formData.append("fileType", "image");
+            try {
+                const response = await fetch("/api/files/posters", {
+                    method: "POST",
+                    body: formData,
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result) {
+                        const id = result.id;
+                        idPoster.push(id);
+                        await previewAvatarFile(file, i);
+
+                    } else {
+                        console.error('Image ID not found in the response.');
+                    }
+                } else {
+                    console.error('Failed to upload image:', response.statusText);
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        }
+    }
+    saveButton.disabled = false;
+
+}
+
+
+async function previewAvatarFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        const imgPost = document.getElementById("poster");
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.classList.add('avatar-previews');
+        imgPost.append(img);
+        const uploadIcon = document.getElementById('uploadIcon');
+        if (uploadIcon) {
+            uploadIcon.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(file);
+}
 
 
 function validateNameUser(inputField) {
@@ -591,7 +600,6 @@ function validateNameUser(inputField) {
     } else {
         nameError.textContent = '';
         nameInput.style.border= "1px solid #d9dee3"
-
         saveButton.disabled = false;
         saveButton.style.opacity = 1;
 

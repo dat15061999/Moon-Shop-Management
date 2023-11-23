@@ -1,5 +1,6 @@
 package com.cg.service.userService.request;
 
+import com.cg.service.request.SelectOptionRequest;
 import lombok.*;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -22,6 +23,7 @@ public class UserCreateRequest implements Validator {
     private String email;
     private String phone;
     private String dob;
+    private SelectOptionRequest avatar;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -35,11 +37,14 @@ public class UserCreateRequest implements Validator {
         String passWord = userCreateRequest.passWord;
         String dobString = userCreateRequest.dob;
         String email = userCreateRequest.email;
+        SelectOptionRequest avatar = userCreateRequest.avatar;
 
         if (name.length() < 6) {
             errors.rejectValue("name", "name.length", "Tên phải có ít nhất là 6 ký tự");
         }
-
+        if ( avatar.getId() == null) {
+            errors.rejectValue("avatar", "avatar.null", "Avatar không được để trống.");
+        }
         if (passWord.length() < 6) {
             errors.rejectValue("passWord", "passWord.length", "Mật khẩu phải có ít nhất là 6 ký tự");
         }

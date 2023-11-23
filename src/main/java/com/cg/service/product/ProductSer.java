@@ -40,7 +40,7 @@ public class ProductSer {
             image.setProduct(product);
         }
          fileRepository.saveAll(images);
-        return ResponseEntity.ok("Sản phẩm đã được tạo thành công.");
+        return ResponseEntity.ok(".");
     }
     public Page<ProductListResponse> showListProduct(String search, Pageable pageable, BigDecimal min, BigDecimal max){
 
@@ -100,7 +100,7 @@ public class ProductSer {
 
         fileRepository.saveAll(images);
         productRepository.save(productDB);
-        return ResponseEntity.ok("Sản phẩm đã được sửa thành công.");
+        return ResponseEntity.ok(".");
 
     }
     public List<SelectOptionResponse> findAll() {

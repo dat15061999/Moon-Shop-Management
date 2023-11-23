@@ -5,6 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/assets/login/css/style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
         <style>
             .container-login100 {
@@ -26,7 +28,7 @@
 
             .login100-more {
                 flex: 1;
-                height: 100vh;
+                height: 112vh;
                 background-size: cover;
                 background-position: center;
             }
@@ -36,55 +38,55 @@
     <div class="limiter">
         <div class="container-login100" style="justify-content: center">
             <div class="login100-more" style="background-image: url('/img/carousel-1.jpg');"></div>
-
             <div class="modal-body" style="width: 588px;">
-
-                <form class="loginForm" id="registerForm" method="post" th:object="${user}" style="height: 603px">
-
-                    <h3 class="login100-form-title p-b-59">
+                <form  class="loginForm" id="registerForm" style="height: 50%">
+                    <h3 class="login100-form-title p-b-30" style="text-align: center">
                         Sign Up
                     </h3>
-                    <div class="form-group col-12" data-validate="Name is required">
-                        <span class="label-input80">Full Name</span>
-                        <input class="input100" type="text" name="name" required placeholder="Name..." th:field="*{name}"/>
-                        <p th:errors="*{name}" class="text-danger"
-                                   th:if="${#fields.hasErrors('name')}"></p>
-                        <span class="focus-input100"></span>
+                    <div style="display: flex">
+                        <div class="form-group col-6" >
+                            <label for="name"  class="label-input80">Full Name</label>
+                            <input id="name" class="input100" type="text" name="name"  placeholder="Name..." oninput="validateNameUserCheck(this)" />
+                            <label for="name" id="nameError" class="error-message" style="color: red;"></label>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="passWord" class="label-input80">Password</label>
+                            <input id="passWord" class="input100" type="text" name="passWord" placeholder="*************" oninput="validatePassword(this)" />
+                            <label for="passWord" id="passWordError" class="error-message" style="color: red;"></label>
+                        </div>
                     </div>
-                    <div class="form-group col-12" data-validate="Password is required">
-                        <span class="label-input80">Password</span>
-                        <input class="input100" type="text" name="passWord" placeholder="*************" required
-                               th:field="*{passWord}">
-                        <p th:errors="*{passWord}" class="text-danger"
-                           th:if="${#fields.hasErrors('passWord')}"></p>
-                        <span class="focus-input100"></span>
+                    <div style="display: flex">
+                        <div class="form-group col-6" >
+                            <label for="email" class="label-input80">Email</label>
+                            <input id="email" class="input100" type="email" name="email"  placeholder="Email address..." oninput="validateEmail(this)" />
+                            <label for="email" id="emailError" class="error-message" style="color: red;"></label>
+                        </div>
+                        <div class="form-group col-6" >
+                            <label for="phone" class="label-input80">Phone</label>
+                            <input id="phone" class="input100" type="text" name="phone" oninput="validatePhoneUSER(this)" placeholder="phone..."  />
+                            <label for="phone" id="phoneError" class="error-message" style="color: red;"></label>
+                        </div>
                     </div>
-                    <div class="form-group col-12" data-validate="Valid email is required: ex@abc.xyz">
-                        <span class="label-input80">Email</span>
-                        <input class="input100" type="email" name="email" required placeholder="Email address..." th:field="*{email}">
-                        <p th:errors="*{email}" class="text-danger"
-                                   th:if="${#fields.hasErrors('email')}"></p>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="form-group col-12" data-validate="Username is required">
-                        <span class="label-input80">Phone</span>
-                        <input class="input100" type="text" name="phone" required placeholder="phone..." th:field="*{phone}">
-                        <p th:errors="*{phone}" class="text-danger"
-                               th:if="${#fields.hasErrors('phone')}"></p>
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="form-group col-12" >
+                    <div class="form-group col-6" >
                         <label for="dob" class="label-input80">Date of Birth</label>
-                        <input id="dob" class="input100" type="date" name="dob"  required
-                               th:field="*{dob}">
-                        <p th:errors="*{dob}" class="text-danger"
-                           th:if="${#fields.hasErrors('dob')}"></p>
-                        <span class="focus-input100"></span>
+                        <input id="dob" class="input100" type="date" name="dob"  oninput="validateDob(this)" />
+                        <label for="dob" id="dobError" class="error-message" style="color: red;"></label>
                     </div>
+                    <div class="form-group col-6">
+                        <label for="post" class="mb-2">Avatar:</label>
+                        <div>
+                            <label class="mb-2" id="poster" for="post">
+                                <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;" ></i>
+                            </label>
+                            <input id="post" class="d-none" type="file" accept="image/*"  onchange="previewAvatar(event)" >
+                        </div>
+                        <label  id="posterError" class="error-message" style="color: red;"></label>
+                    </div>
+
                     <div class="container-login100-form-btn">
                         <div class="wrap-login100-form-btn">
                             <div class="login100-form-bgbtn"></div>
-                            <button class="login100-form-btn" type="submit">
+                            <button class="login100-form-btn" type="submit" id="saveRegister">
                                 Register
                             </button>
                         </div>
@@ -99,5 +101,310 @@
             </div>
         </div>
     </div>
+    <script>
+        const register = document.getElementById("registerForm");
+        console.log(register)
+        let data ={}
+        let idPoster = [];
+        const nameInput = document.getElementById("name");
+        const phoneInput = document.getElementById("phone");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("passWord");
+        const dobInput = document.getElementById("dob");
+        const posterInput = document.getElementById("post");
+        const nameError = document.getElementById("nameError");
+        const phoneError = document.getElementById("phoneError");
+        const emailError = document.getElementById("emailError");
+        const passwordError = document.getElementById("passWordError");
+        const saveButton = document.getElementById("saveRegister");
+        const dobError = document.getElementById("dobError");
+        const posterError = document.getElementById("posterError");
+        register.onsubmit = async (e) => {
+            let hasError = false;
+
+
+            if (nameInput.value.trim() === "") {
+                nameError.textContent = "Tên là  bắt buộc.";
+                hasError = true;
+            }
+            if (emailInput.value.trim() === "") {
+                emailError.textContent = "Email là  bắt buộc.";
+                hasError = true;
+            }
+            if (phoneInput.value.trim() === "") {
+                phoneError.textContent = "Số điện thoại là  bắt buộc.";
+                hasError = true;
+            }
+            if (dobInput.value.trim() === "") {
+                dobError.textContent = "Ngày sinh là  bắt buộc.";
+                hasError = true;
+            }
+
+            if (passwordInput.value.trim() === "") {
+                passwordError.textContent = "Mật khẩu là  bắt buộc.";
+                hasError = true;
+            }
+            if ( posterInput.value.trim() === "") {
+                posterError.textContent = "Avatar là  bắt buộc.";
+                hasError = true;
+            } else {
+                posterError.textContent = '';
+            }
+            if (hasError){
+                e.preventDefault();
+                return;
+            }
+            const passWord = document.getElementById("passWord").value
+            const name = document.getElementById("name").value
+            const email =  document.getElementById("email").value
+            const phone =  document.getElementById("phone").value
+            const dob =  document.getElementById("dob").value
+            data = {
+                ...data,
+                avatar: { id: idPoster[0] },
+                passWord,
+                name,
+                email,phone,dob
+            }
+            event.preventDefault()
+            const response = await fetch('/api/register', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Đang xử lý',
+                    text: 'Vui lòng chờ...',
+                    willOpen: () => {
+                        Swal.showLoading();
+                    },
+                    timer: 2000, // Đợi 2 giây (2000ms)
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                }).then(async (result) =>  {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        // Sau khi đợi 2 giây, hiển thị thông báo thành công
+                        await  Swal.fire({
+                            text: 'Đăng kí thành công.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            position: 'top-start',
+                            timer: 1500 // Hiển thị thông báo thành công trong 1,5 giây (1500ms)
+                        });
+                        // await register.reset()
+                        // document.getElementById('poster').innerHTML = ' <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>'
+                        window.location.href = "http://localhost:8081/login";
+
+                    }
+                });
+            } else {
+                const responseJSON = await response.json();
+                if (responseJSON) {
+                    console.log(responseJSON)
+                    const errorFullNameElement = document.getElementById("nameError");
+                    if ("name" in responseJSON) {
+                        errorFullNameElement.style.display = "block";
+                        errorFullNameElement.innerText = responseJSON.name;
+                        errorFullNameElement.style.color= "red"
+                    }
+                    const errorEmailElement = document.getElementById("phoneError");
+                    if ("phone" in responseJSON) {
+                        errorEmailElement.style.display = "block";
+                        errorEmailElement.innerText = responseJSON.phone;
+                        errorEmailElement.style.color= "red"
+                    }
+                    const productsErrorElement = document.getElementById("dobError");
+                    if ("dob" in responseJSON) {
+                        productsErrorElement.style.display = "block";
+                        productsErrorElement.innerText = responseJSON.dob;
+                        productsErrorElement.style.color= "red"
+                    }
+                    const emailErrorElement = document.getElementById("emailError");
+                    if ("email" in responseJSON) {
+                        emailErrorElement.style.display = "block";
+                        emailErrorElement.innerText = responseJSON.email
+                        emailErrorElement.style.color= "red"
+                    }
+
+                    const passwordErrorElement = document.getElementById("passWordError");
+                    if ("passWord" in responseJSON) {
+                        passwordErrorElement.style.display = "block";
+                        passwordErrorElement.innerText = responseJSON.passWord;
+                        passwordErrorElement.style.color= "red"
+                    }
+                    const errorPosterElement = document.getElementById("posterError");
+                    if ("avatar" in responseJSON) {
+                        errorPosterElement.style.display = "block";
+                        errorPosterElement.innerText = responseJSON.avatar;
+                        errorPosterElement.style.color= "red"
+                    }
+                }
+            }
+        }
+        function validateNameUserCheck(inputField) {
+            const nameValue = inputField.value;
+            console.log(nameValue)
+            const vietnameseWithDiacriticsAndLetterRegex = /^(?=.*[a-zA-Z\d]).{6,}$/
+
+            if (!vietnameseWithDiacriticsAndLetterRegex.test(nameValue)) {
+                nameError.textContent = "Họ và tên phải chứa ít nhất 6 ký tự và có thể có số.";
+                nameInput.style.border= "1px solid red"
+                nameError.style.fontSize = "14px";
+                saveButton.disabled = true;
+                saveButton.style.opacity = 0.5;
+            } else {
+                nameError.textContent = '';
+                nameInput.style.border= "1px solid #d9dee3"
+
+                saveButton.disabled = false;
+                saveButton.style.opacity = 1;
+
+            }
+        }
+
+        function validatePhoneUSER(inputField) {
+            const phoneValue = inputField.value;
+            const isLengthValid = phoneValue.length >= 2;
+            if (isLengthValid) {
+                phoneError.textContent = '';
+                inputField.style.border = "1px solid #d9dee3";
+                saveButton.disabled = false;
+                saveButton.style.opacity = 1;
+            }
+        }
+        function validatePassword(inputField) {
+            const passwordValue = inputField.value;
+            const vietnameseWithDiacriticsAndLetterRegex = /^[A-Za-z0-9À-ỹ\s]*[A-Za-z0-9À-ỹ]+[A-Za-z0-9À-ỹ\s]*$/;
+            const isLengthValid = passwordValue.length >= 6;
+            if (!vietnameseWithDiacriticsAndLetterRegex.test(passwordValue) || !isLengthValid) {
+                passWordError.textContent = "Mật khẩu phải chứa ít nhất 6 ký tự và có thể có số.";
+                inputField.style.border = "1px solid red";
+                passWordError.style.fontSize = "14px";
+                saveButton.disabled = true;
+                saveButton.style.opacity = 0.5;
+            } else {
+                passWordError.textContent = '';
+                inputField.style.border = "1px solid #d9dee3";
+                saveButton.disabled = false;
+                saveButton.style.opacity = 1;
+            }
+        }
+        function validateEmail(inputField) {
+            const emailValue = inputField.value;
+            const emailRegex = /^(?=.*[@])(?=.*(gmail\.com|yahoo\.com|email\.com|mailinator\.com))(?!.*\.{2})[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+            if (!emailRegex.test(emailValue)) {
+                emailError.textContent = "Địa chỉ email không hợp lệ.";
+                inputField.style.border = "1px solid red";
+                emailError.style.fontSize = "14px";
+                saveButton.disabled = true;
+                saveButton.style.opacity = 0.5;
+            } else {
+                emailError.textContent = '';
+                inputField.style.border = "1px solid #d9dee3";
+                saveButton.disabled = false;
+                saveButton.style.opacity = 1;
+            }
+        }
+        function validateDob(inputField) {
+            const dobValue = inputField.value;
+            const dobError = document.getElementById("dobError");
+            if (calculateAge(dobValue) < 16) {
+                dobError.textContent = "Bạn phải đủ 16 tuổi trở lên.";
+                inputField.style.border = "1px solid red";
+                dobError.style.fontSize = "14px";
+                saveButton.disabled = true;
+                saveButton.style.opacity = 0.5;
+            } else {
+                dobError.textContent = '';
+                inputField.style.border = "1px solid #d9dee3";
+                saveButton.disabled = false;
+                saveButton.style.opacity = 1;
+            }
+        }
+        function calculateAge(dob) {
+            const dobDate = new Date(dob);
+            const currentDate = new Date();
+            const age = currentDate.getFullYear() - dobDate.getFullYear();
+            if (
+                currentDate.getMonth() < dobDate.getMonth() ||
+                (currentDate.getMonth() === dobDate.getMonth() && currentDate.getDate() < dobDate.getDate())
+            ) {
+                return age - 1;
+            }
+
+            return age;
+        }
+
+        async function previewAvatar(evt) {
+
+            if(evt.target.files.length === 0){
+
+                return;
+            }
+            idPoster = [];
+            posterError.textContent='';
+            saveButton.disabled=true;
+
+            const imgPost = document.getElementById("poster");
+            const imageOld1 = imgPost.querySelectorAll('img');
+            for (let i = 0; i < imageOld1.length; i++) {
+                imgPost.removeChild(imageOld1[i])
+            }
+            const files = evt.target.files
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                if (file) {
+                    const formData = new FormData();
+                    formData.append("poster", file);
+                    formData.append("fileType", "image");
+                        const response = await fetch("/api/files/posters", {
+                            method: "POST",
+                            body: formData,
+                        });
+                        if (response.ok) {
+                            const result = await response.json();
+                            if (result) {
+                                const id = result.id;
+                                idPoster.push(id);
+                                await previewAvatarFile(file, i);
+                                saveButton.disabled=false
+                            } else {
+                                console.error('Image ID not found in the response.');
+                            }
+                        }
+
+                }
+            }
+
+        }
+
+
+        async function previewAvatarFile(file) {
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                const imgPost = document.getElementById("poster");
+                const img = document.createElement('img');
+                img.src = reader.result;
+                img.classList.add('avatar-previews');
+                img.style.width = "96px";
+                img.style.height = "96px";
+                imgPost.append(img);
+                const uploadIcon = document.getElementById('uploadIcon');
+                if (uploadIcon) {
+                    uploadIcon.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
     </body>
     </html>

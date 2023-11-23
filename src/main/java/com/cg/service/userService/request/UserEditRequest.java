@@ -2,6 +2,7 @@ package com.cg.service.userService.request;
 
 
 import com.cg.model.Customer;
+import com.cg.service.request.SelectOptionRequest;
 import com.cg.service.userService.UserService;
 import lombok.Data;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class UserEditRequest implements Validator {
     private String phone;
 
     private String dob;
+    private SelectOptionRequest avatar;
 
 
     private UserService userService;

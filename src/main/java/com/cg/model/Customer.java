@@ -38,6 +38,8 @@ public class Customer {
     private String address;
 
     private boolean deleted = false;
+    @ManyToOne
+    private Image avatar;
 
     @Enumerated(EnumType.STRING)
     private EStatusCustomer statusCustomer;

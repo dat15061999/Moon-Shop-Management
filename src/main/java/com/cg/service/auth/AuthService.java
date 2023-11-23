@@ -3,10 +3,12 @@ package com.cg.service.auth;
 
 
 import com.cg.model.Customer;
+import com.cg.model.Image;
 import com.cg.model.enums.ELock;
 import com.cg.model.enums.ERole;
 import com.cg.model.enums.EStatusCustomer;
 import com.cg.repository.CustomerRepository;
+import com.cg.repository.ImageRepository;
 import com.cg.service.auth.request.RegisterRequest;
 import com.cg.until.AppUtil;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -29,33 +32,21 @@ public class AuthService implements UserDetailsService {
     private final CustomerRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private ImageRepository imageRepository;
 
-    public void register(RegisterRequest request){
-        var user = AppUtil.mapper.map(request, Customer.class);
+    public Customer register(RegisterRequest request){
+        Customer user = AppUtil.mapper.map(request, Customer.class);
+        Image avatar = imageRepository.findById(request.getAvatar().getId()).get();
+        user.setAvatar(avatar);
         user.setRole(ERole.ROLE_USER);
         user.setPassWord(passwordEncoder.encode(user.getPassWord()));
         user.setDeleted(false);
         user.setELock(ELock.UNLOCK);
         user.setStatusCustomer(EStatusCustomer.SILVER);
-        userRepository.save(user);
+      return   userRepository.save(user);
     }
 
-    public boolean checkNameOrPhoneOrEmail(RegisterRequest request, BindingResult result){
-        boolean check = false;
-        if(userRepository.existsByNameIgnoreCase(request.getName())){
-            result.rejectValue("name", "name", "Tên người dùng đã tồn tại");
-            check = true;
-        }
-        if(userRepository.existsByEmailIgnoreCase(request.getEmail())){
-            result.rejectValue("email", "email", "Email đã tồn tại");
-            check = true;
-        }
-        if(userRepository.existsByPhone(request.getPhone())){
-            result.rejectValue("phone", "phone", "Số điện thoại đã tồn tại");
-            check = true;
-        }
-        return check;
-    }
+
 
     public Optional<Customer> getCustomerByName(String name){
         return userRepository.getCustomerByName(name);
@@ -63,9 +54,9 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer user = userRepository.findByNameIgnoreCaseOrEmailIgnoreCaseOrPhone(username,username,username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not Exist") );
+                .orElseThrow(() -> new LockedException("Mật khẩu hoặc tên đăng nhập không hợp lê") );
         if (user.getELock() == ELock.LOCK) {
-            throw new LockedException("User account is locked");
+            throw new LockedException("Tài khoản đã bị khóa");
         }
 
         var role = new ArrayList<SimpleGrantedAuthority>();
