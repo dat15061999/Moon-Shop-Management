@@ -23,13 +23,12 @@ public class BillDetail {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
     private int quantity;
-    private BigDecimal amount;
-    private int feesShipping;
-    private String product_name;
-    private BigDecimal product_price;
-    private String product_size;
-    private String product_color;
+
+    private String productName;
+
+    private BigDecimal productPrice;
 
     private BigDecimal totalAmount;
 

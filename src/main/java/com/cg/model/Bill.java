@@ -24,13 +24,13 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer user;
+
     private String userName;
-    private String paymentMethod;
+
     @Enumerated(value = EnumType.STRING)
     private EPayment ePayment;
 
-    @Enumerated(value = EnumType.STRING)
-    private EStatus status;
+
 
 }
 

@@ -2,12 +2,17 @@ package com.cg.service.bill;
 
 import com.cg.model.Bill;
 import com.cg.model.BillDetail;
+import com.cg.model.Cart;
+import com.cg.model.CartDetail;
+import com.cg.model.enums.EPayment;
 import com.cg.repository.BillDetailRepository;
 import com.cg.repository.BillRepository;
+import com.cg.service.cart.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,9 +46,42 @@ public class BillService implements IBillService {
 
     }
 
+    @Override
+    public void saveBillDetailFromDetail(Bill bill,CartDetail cartDetail) {
+
+        BillDetail billDetails = new BillDetail();
+
+        billDetails.setBill(bill);
+
+        billDetails.setProduct(cartDetail.getProduct());
+
+        billDetails.setProductName(cartDetail.getProductName());
+
+        billDetails.setProductPrice(cartDetail.getProductPrice());
+
+        billDetails.setQuantity(cartDetail.getQuantity());
+
+        billDetails.setTotalAmount(cartDetail.getTotalAmount());
+
+        billDetailRepository.save(billDetails);
+
+    }
 
     @Override
-    public void saveBillDetail(BillDetail billDetail) {
-        billDetailRepository.save(billDetail);
+    public Bill saveBillFromCart(Cart cart) {
+        Bill bill = new Bill();
+
+        bill.setCreate_at(cart.getCreate_at());
+
+        bill.setUser(cart.getCustomer());
+
+        bill.setUserName(cart.getCustomer().getName());
+
+        bill.setEPayment(EPayment.NONE);
+
+        billRepository.save(bill);
+
+        return bill;
+
     }
 }

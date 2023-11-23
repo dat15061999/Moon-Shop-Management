@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class CartDetailReqDTO {
     private Long idProduct;
-    private Long idCustomer;
     private String productName;
     private BigDecimal productPrice;
     private int amount;
@@ -28,15 +27,14 @@ public class CartDetailReqDTO {
 
     public Cart toCart(){
         return new Cart()
-                .setCustomer(new Customer(idCustomer))
                 .setCreate_at(LocalDateTime.now());
     }
     public CartDetail toCartDetail(){
         return new CartDetail()
                 .setTotalAmount(totalAmount)
                 .setProduct(new Product(idProduct))
-                .setProduct_name(productName)
-                .setProduct_price(productPrice)
+                .setProductName(productName)
+                .setProductPrice(productPrice)
                 .setQuantity(amount)
                 ;
     }

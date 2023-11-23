@@ -1,6 +1,4 @@
 package com.cg.api;
-
-
 import com.cg.exception.AppUtils;
 import com.cg.model.*;
 import com.cg.model.dto.*;
@@ -37,14 +35,22 @@ public class HomeAPI {
     private AppUtils appUtils;
     @GetMapping
     public ResponseEntity<?> showAll(){
+
         List<Product> products = productService.findAll();
+
         List<ProductResDTO> productResDTOs = products.stream()
                 .map(product -> new ProductResDTO(
+
                         product.getId(),
+
                         product.getProductName(),
+
                         product.getDescription(),
+
                         product.getScore(),
+
                         product.getProductPrice(),
+
                         imageRepository.findImagesByProductId(product.getId())))
                 .collect(Collectors.toList());
 
@@ -52,12 +58,17 @@ public class HomeAPI {
     }
     @GetMapping("{productId}")
     public ResponseEntity<?> getProductById(@PathVariable Long productId){
+
         Optional<Product> product = productService.findById(productId);
+
         ProductResDTO productResDTO = product.orElseThrow().toProductResDTO();
+
         return new ResponseEntity<>(productResDTO,HttpStatus.OK);
     }
-    @PostMapping("/cart/{idCustomer}")
-    public ResponseEntity<?> addProToCart(@PathVariable Long idCustomer,@RequestBody CartDetailReqDTO cartDetailReqDTO){
+    @PostMapping("/cart")
+    public ResponseEntity<?> addProToCart(@RequestBody CartDetailReqDTO cartDetailReqDTO){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
+
         Optional<Cart> cart = cartService.findByIdCustomer(idCustomer);
 
         CartDetail cartDetail = cartDetailReqDTO.toCartDetail();
@@ -75,7 +86,9 @@ public class HomeAPI {
             }
         } else {
             Cart newCart = cartDetailReqDTO.toCart();
+
             newCart.setCustomer(new Customer(idCustomer));
+
             cartService.save(newCart);
 
             cartDetail.setCart(newCart);
@@ -84,8 +97,9 @@ public class HomeAPI {
         }
         return new ResponseEntity<>(cartDetailReqDTO,HttpStatus.OK);
     }
-    @GetMapping("/cart/{idCustomer}")
-    public ResponseEntity<?> getCarts(@PathVariable Long idCustomer){
+    @GetMapping("/cart")
+    public ResponseEntity<?> getCarts(){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         List<CartDetailResDTO> cartDetails = cartService.getAllByCustomer_Id(idCustomer);
 
@@ -99,32 +113,35 @@ public class HomeAPI {
 
         return new ResponseEntity<>("OK",HttpStatus.OK);
     }
-    @GetMapping("/cartDetail/{idCustomer}")
-    public  ResponseEntity<?> getCountDetail(@PathVariable Long idCustomer){
+    @GetMapping("/cartDetail")
+    public  ResponseEntity<?> getCountDetail(){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
 
        Long countCartDetailByCustomer =  cartService.getCountDetail(idCustomer);
 
        return new ResponseEntity<>(countCartDetailByCustomer,HttpStatus.OK);
     }
 
-    @GetMapping("/customer/{customerID}")
-    public  ResponseEntity<?> getCustomerByID(@PathVariable Long customerID){
+    @GetMapping("/customer")
+    public  ResponseEntity<?> getCustomerByID(){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
 
-        Customer customer = userService.findById(customerID);
+        Customer customer = userService.findById(idCustomer);
 
         CustomerResDTO customerResDTO = customer.toCustomerResDTO();
 
         return new ResponseEntity<>(customerResDTO,HttpStatus.OK);
     }
-    @PatchMapping("/customer/{customerID}")
-    public  ResponseEntity<?> updateCustomerByID(@PathVariable Long customerID, @Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult){
+    @PatchMapping("/customer")
+    public  ResponseEntity<?> updateCustomerByID( @Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult){
 
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         if (bindingResult.hasFieldErrors()){
             return appUtils.mapErrorToResponse(bindingResult);
         }
 
-        Customer customer = userService.findById(customerID);
+        Customer customer = userService.findById(idCustomer);
 
         customer.setName(customerReqDTO.getName());
 
@@ -137,5 +154,29 @@ public class HomeAPI {
         userService.save(customer);
 
         return new ResponseEntity<>(customer,HttpStatus.OK);
+    }
+
+    @PostMapping("/bill")
+    public  ResponseEntity<?> createBill(){
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
+
+        Optional<Cart> cart = cartService.findByIdCustomer(idCustomer);
+
+        if (cart.isEmpty()) {
+            return new ResponseEntity<>(403,HttpStatus.NOT_FOUND);
+        }
+
+        List<CartDetail> cartDetails = cartService.findCartDetailByCartCustomer_Id(idCustomer);
+
+        Bill bill = billService.saveBillFromCart(cart.get());
+
+        for (int i = 0 ; cartDetails.size()-i > 0; i++) {
+            billService.saveBillDetailFromDetail(bill, cartDetails.get(i));
+            cartService.deleteCartDetail(cartDetails.get(i).getId());
+        }
+
+        cartService.deleteById(cart.get().getId());
+
+        return new ResponseEntity<>("ok",HttpStatus.OK);
     }
 }

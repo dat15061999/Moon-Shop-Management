@@ -22,4 +22,5 @@ public interface ICartService extends IGeneralService<Cart,Long> {
 
     long getCountDetail(Long idCustomer);
 
+    List<CartDetail> findCartDetailByCartCustomer_Id(Long idCustomer);
 }

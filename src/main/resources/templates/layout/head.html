@@ -42,7 +42,6 @@
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My
                             Account
                         </button>
-                        <input type="hidden" id="customerID" th:value="${customer.id}">
                         <th:block th:if="${customer.id} == null">
                             <div class="dropdown-menu dropdown-menu-right">
                                 <button class="dropdown-item" type="button">Sign in</button>

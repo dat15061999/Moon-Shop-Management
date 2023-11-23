@@ -2,12 +2,13 @@ const page = {
     url: {
         getAllProducts: AppUtils.BASE_PRODUCT_API,
         getProductById: AppUtils.BASE_PRODUCT_API + "/",
-        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API + "/",
-        getAllCartList: AppUtils.BASE_All_CARTS_API + "/",
+        addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API ,
+        getAllCartList: AppUtils.BASE_All_CARTS_API ,
         deleteProductFromCart: AppUtils.BASE_DELETE_PRODUCT_FROM_CART_API,
         countCartDetails: AppUtils.BASE_COUNT_CART_API,
         getCustomerById: AppUtils.BASE_GET_CUSTOMER_BY_ID_API,
         updateCustomerById: AppUtils.BASE_UPDATE_CUSTOMER_BY_ID_API,
+        createBillFromCart:AppUtils.BASE_CREATE_BILL,
     },
     elements: {},
     loadData: {},
@@ -60,9 +61,9 @@ page.elements.dobCustomerCheckout = $('#dobCheckout');
 
 page.elements.btnBill = $('#btnAddBill');
 
-page.elements.frmBill = $('#frmAddToBIll');
+page.elements.btnCartToCheckout = $('#btn-to-checkout');
 
-let customerID = $('#customerID').val();
+page.elements.frmBill = $('#frmAddToBIll');
 
 let productID = 0;
 
@@ -83,13 +84,11 @@ page.commands.getAllProduct = async () => {
 }
 
 page.commands.render = (obj) => {
-    console.log(obj)
-    console.log(obj.imageList[0].url)
     return `
                 <div class="col-lg-4 col-md-6 col-sm-6 pb-1" >
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden" >
-                                <img class="img-fluid w-100" src=${obj.imageList[0].url} style="width: 280px;height: 150px" alt="">
+                                <img class="img-fluid w-100" src=${obj.imageList[0].url} style="width: 280px;height: 280px" alt="">
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                             class="fa fa-shopping-cart"></i></a>
@@ -151,7 +150,7 @@ page.elements.btnCustomer.on('click', function () {
 
 page.commands.renderCustomer = () => {
     $.ajax({
-        url: page.url.getCustomerById + customerID
+        url: page.url.getCustomerById
     })
         .done(async (data) => {
 
@@ -208,8 +207,6 @@ page.commands.updateCustomer = async () => {
 
     const dob = page.elements.dobCustomer.val();
 
-
-
     const data = {
         name,
         email,
@@ -218,7 +215,7 @@ page.commands.updateCustomer = async () => {
 
     }
     await $.ajax({
-        url: page.url.updateCustomerById + customerID,
+        url: page.url.updateCustomerById ,
         method: "PATCH",
         contentType: "application/json",
         data: JSON.stringify(data),
@@ -231,6 +228,18 @@ page.commands.updateCustomer = async () => {
     page.elements.modalCustomer.modal('hide');
 
 }
+//
+page.elements.btnCartToCheckout.on('click', async ()=>{
+
+    await $.ajax({
+        url: "http://localhost:8081/home/checkout"
+    });
+    await page.commands.renderCartToBillCheckout();
+
+
+})
+
+
 
 //Render list Cart
 page.commands.renderCart = (obj) => {
@@ -310,7 +319,7 @@ page.commands.amountProsOnCart = () => {
 //Render Customer to page checkout
 page.commands.renderCustomerToPageCheckOut = async ()=>{
     await $.ajax({
-        url: page.url.getCustomerById + customerID,
+        url: page.url.getCustomerById ,
         method: "GET"
     })
         .done((data)=>{
@@ -331,7 +340,7 @@ page.commands.renderCartToBillCheckout = async () => {
     page.elements.renderCartOnCheckout.empty();
 
     const listCart = await $.ajax({
-        url: page.url.getAllCartList + customerID,
+        url: page.url.getAllCartList ,
         method: "GET"
     });
     let str = '';
@@ -373,7 +382,7 @@ page.commands.renderListProductsToCart = async () => {
     let amount = 0;
 
     const listCart = await $.ajax({
-        url: page.url.getAllCartList + customerID,
+        url: page.url.getAllCartList ,
         method: "GET"
     });
 
@@ -409,14 +418,36 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
     )
     await page.commands.countCartDetailByCustomerID()
 
-    await page.commands.renderListProductsToCart(1);
+    await page.commands.renderListProductsToCart();
 
     await page.commands.renderCartToBillCheckout();
 }
 //bill
 page.elements.btnBill.on('click', async () => {
-    page.elements.frmBill.trigger('submit')
+   await page.commands.createBill();
 })
+page.commands.createBill =async () =>{
+    const amountProduct = await $.ajax({
+        url: page.url.countCartDetails
+    })
+    if (amountProduct <= 0) {
+
+        AppUtils.showError("Bạn chưa có sản phẩm!")
+
+        return;
+    }
+
+    await $.ajax({
+        url:page.url.createBillFromCart,
+        method: "POST"
+    })
+    await page.commands.countCartDetailByCustomerID();
+
+    await page.commands.renderCartToBillCheckout();
+
+    AppUtils.showSuccess("Đặt hàng thành công!");
+
+}
 
 // Add product to cart
 page.elements.btnAddProductToCart.on('click', async () => {
@@ -433,7 +464,6 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     const data = {
         idProduct,
-        customerID,
         productName:name,
         productPrice:price,
         amount: amountIn,
@@ -454,7 +484,7 @@ page.elements.btnAddProductToCart.on('click', async () => {
 // add cart
 page.commands.addCart = async (data) => {
     await $.ajax({
-        url: page.url.addProductToCart + customerID,
+        url: page.url.addProductToCart,
         contentType: "application/json",
         data: JSON.stringify(data),
         method: "POST"
@@ -463,7 +493,7 @@ page.commands.addCart = async (data) => {
 
 page.commands.countCartDetailByCustomerID = async () => {
     const count = await $.ajax({
-        url: page.url.countCartDetails + customerID
+        url: page.url.countCartDetails
     })
     page.elements.countCartDetails.text(count);
 }
@@ -472,6 +502,5 @@ $(async () => {
     await page.commands.getAllProduct();
     await page.commands.handleClick();
     await page.commands.countCartDetailByCustomerID();
-    await page.commands.renderCartToBillCheckout();
     await page.commands.renderCustomerToPageCheckOut();
 })

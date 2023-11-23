@@ -39,7 +39,7 @@ public class CartService implements ICartService{
 
     @Override
     public void deleteById(Long id) {
-
+        cartRepository.deleteById(id);
     }
 
     @Override
@@ -81,5 +81,10 @@ public class CartService implements ICartService{
     @Override
     public long getCountDetail(Long idCustomer) {
         return cartDetailRepository.getCount(idCustomer);
+    }
+
+    @Override
+    public List<CartDetail> findCartDetailByCartCustomer_Id(Long idCustomer) {
+        return cartDetailRepository.findCartDetailByCartCustomer_Id(idCustomer);
     }
 }

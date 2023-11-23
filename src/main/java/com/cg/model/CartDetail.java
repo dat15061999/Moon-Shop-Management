@@ -35,8 +35,8 @@ public class CartDetail {
 
     private BigDecimal totalAmount;
 
-    private String product_name;
+    private String productName;
 
-    private BigDecimal product_price;
+    private BigDecimal productPrice;
 
 }

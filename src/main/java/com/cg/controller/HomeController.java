@@ -107,7 +107,6 @@ public class HomeController {
     }
 
     @GetMapping("/checkout")
-
     public ModelAndView showCheckout(HttpSession session) {
         ModelAndView view = new ModelAndView("checkout");
         view.addObject("customer", userService.getCurrentCustomer().get());
