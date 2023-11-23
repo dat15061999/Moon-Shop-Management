@@ -20,6 +20,7 @@ public class ProductEditRequest implements Validator {
 
     private String description;
 
+    private SelectOptionRequest poster;
 
     private List<SelectOptionRequest> images;
     @Override

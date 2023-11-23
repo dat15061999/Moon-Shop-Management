@@ -15,6 +15,7 @@ const saveButton = document.getElementById("save");
 let products = [];
 let productSelected = {};
 let idImages = [];
+let idPoster = [];
 
 
 let pageable = {
@@ -65,9 +66,9 @@ function renderItemStr(item) {
                     <td>
                         ${item.description}
                     </td>
-                    <td >
-                    <img src="${imga}" style="width: 100px;height: 70px"></img>
-</td>
+                     <td style="width: 92px;text-align: center" >
+                        <img src="${item.poster}" alt="" class="enlarge-image" style="width: 83px;height: 83px">
+                    </td>
 
                     <td>
                         ${formatCurrency(item.price)}
@@ -96,15 +97,15 @@ function formatCurrency(number) {
 // được sử dụng để sắp xếp theo asc hoặc desc
 const priceSpan = document.querySelector('.arrow');
 const arrowUpClass = 'arrow-up';
-priceSpan.addEventListener('click', () =>{
-    if (priceSpan.classList.contains(arrowUpClass)) {
-        priceSpan.innerHTML = 'Price &#9650;'; // Ngược lên
-        priceSpan.classList.remove(arrowUpClass);
-    } else {
-        priceSpan.innerHTML = 'Price &#9660;'; // Ngược xuống
-        priceSpan.classList.add(arrowUpClass);
-    }
-});
+// priceSpan.addEventListener('click', () =>{
+//     if (priceSpan.classList.contains(arrowUpClass)) {
+//         priceSpan.innerHTML = 'Price &#9650;'; // Ngược lên
+//         priceSpan.classList.remove(arrowUpClass);
+//     } else {
+//         priceSpan.innerHTML = 'Price &#9660;'; // Ngược xuống
+//         priceSpan.classList.add(arrowUpClass);
+//     }
+// });
 ePriceRange.onchange= () => {
     const priceRange = ePriceRange.value;
     const [min, max] = priceRange.split('-').map(Number);
@@ -162,7 +163,14 @@ productForm.onsubmit = async (e) => {
         priceError.textContent = ''; // Xóa thông báo lỗi nếu hợp lệ
     }
 
-
+    // if(document.getElementById("staticBackdropLabel").innerText === "Create Service"){
+    //     if ( posterInput.value.trim() === "") {
+    //         posterError.textContent = "Poster là trường bắt buộc.";
+    //         hasError = true;
+    //     } else {
+    //         posterError.textContent = ''; // Xóa thông báo lỗi nếu hợp lệ
+    //     }
+    // }
 
 
 
@@ -181,6 +189,8 @@ productForm.onsubmit = async (e) => {
     data = {
         ...data,
         id: productSelected.id,
+        poster: { id: idPoster[0] },
+
         images: idImages.map(e => {
             return {
                 id: e
@@ -205,6 +215,7 @@ document.getElementById('create').onclick = () => {
     onShowCreate();
 }
 const onShowCreate = () => {
+    document.getElementById('poster').innerHTML = ' <i id="uploadIcon" class="fas fa-upload" style="font-size: 95px;"></i>'
     clearForm();
     $('#staticBackdropLabel').text('Create Service');
 
@@ -287,8 +298,17 @@ const findById = async (id) => {
 const onShowEdit = async (id) => {
     clearForm();
     productSelected = await findById(id);
-    console.log(productSelected)
-    showImgInForm(productSelected.images, productSelected.idImages);
+    const poster = document.getElementById("poster");
+    const img = document.createElement('img');
+    img.src = productSelected.poster;
+    img.id = productSelected.idPoster;
+    img.style.width='150px';
+    img.style.height='100px';
+
+    if(productSelected.poster){
+        document.getElementById("uploadIcon").style.display="none";
+        poster.append(img)
+    }    showImgInForm(productSelected.images, productSelected.idImages);
     $('#staticBackdropLabel').text('Edit Service');
     $('#staticBackdrop').modal('show');
     $('#name').val(productSelected.name);
@@ -476,7 +496,11 @@ function clearForm() {
     for (let i = 0; i < imageChild.length; i++) {
         imagesEle.removeChild(imageChild[i]);
     }
-
+    const posterEle = document.getElementById("poster")
+    const posterChild = posterEle.querySelectorAll('img');
+    for (let i = 0; i < posterChild.length; i++) {
+        posterEle.removeChild(posterChild[i])
+    }
     productForm.reset();
     productSelected = {};
 }
@@ -803,7 +827,71 @@ const onShowDetail = async (id) => {
 
 }
 
+async function previewPoster(evt) {
 
+    if(evt.target.files.length === 0){
+        return;
+    }
+    idPoster = [];
+    posterError.textContent='';
+
+    saveButton.disabled = true;
+
+    const imgPost = document.getElementById("poster");
+    const imageOld1 = imgPost.querySelectorAll('img');
+    for (let i = 0; i < imageOld1.length; i++) {
+        imgPost.removeChild(imageOld1[i])
+    }
+    const files = evt.target.files
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        await previewPosterFile(file, i);
+        if (file) {
+            const formData = new FormData();
+            formData.append("poster", file);
+            formData.append("fileType", "image");
+            try {
+                const response = await fetch("/api/files/posters", {
+                    method: "POST",
+                    body: formData,
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result) {
+                        const id = result.id;
+                        idPoster.push(id);
+                    } else {
+                        console.error('Image ID not found in the response.');
+                    }
+                } else {
+                    console.error('Failed to upload image:', response.statusText);
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        }
+    }
+    saveButton.disabled = false;
+
+}
+
+
+async function previewPosterFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        const imgPost = document.getElementById("poster");
+        const img = document.createElement('img');
+        img.src = reader.result;
+        img.classList.add('avatar-previews');
+        imgPost.append(img);
+        const uploadIcon = document.getElementById('uploadIcon');
+        if (uploadIcon) {
+            uploadIcon.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(file);
+}
 
 
 

@@ -50,7 +50,8 @@ public class ProductSer {
                         .name(product.getProductName())
                         .description(product.getDescription())
                         .price(product.getProductPrice())
-                        .images(String.valueOf(product.getImageList().stream().map(Image::getUrl).toList()))
+                        .poster(String.valueOf(product.getPoster().getUrl()))
+                        .images(String.valueOf(product.getImageList()))
                         .deleted(product.getDeleted())
                         .build());
     }
@@ -72,6 +73,8 @@ public class ProductSer {
         var result = AppUtil.mapper.map(product, ProductEditResponse.class);
         result.setPrice(product.getProductPrice());
         result.setName(product.getProductName());
+        result.setPoster(product.getPoster().getUrl());
+        result.setIdPoster(product.getPoster().getId());
         List<String> images = product.getImageList()
                 .stream()
                 .map(Image::getUrl)
@@ -93,11 +96,12 @@ public class ProductSer {
         for (var image: images) {
             image.setProduct(productDB);
         }
+        if(request.getPoster() != null && request.getPoster().getId() !=null){
+            productDB.setPoster(Image.builder().id(request.getPoster().getId()).build());
+        }
         productDB.setProductName(request.getName());
         productDB.setDescription(request.getDescription());
         productDB.setProductPrice(new BigDecimal(request.getPrice()));
-
-
         fileRepository.saveAll(images);
         productRepository.save(productDB);
         return ResponseEntity.ok(".");

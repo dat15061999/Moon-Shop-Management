@@ -1,6 +1,7 @@
 package com.cg.model;
 import com.cg.model.dto.ProductResDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import java.math.BigDecimal;
@@ -29,6 +30,10 @@ public class Product {
     private List<Image> imageList;
     @OneToMany(mappedBy = "product")
     private List<BillDetail> billProducts;
+    @ManyToOne
+    @NotNull(message = "Not null")
+    private Image poster;
+
     public Product(Long id) {
         this.id = id;
     }

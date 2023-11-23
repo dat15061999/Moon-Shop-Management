@@ -32,6 +32,12 @@ public class BillDetail {
 
     private BigDecimal totalAmount;
 
+    public BillDetail(Long id) {
+        this.id = id;
+    }
 
-
+    public BillDetail(Bill bill, Product product) {
+        this.bill = bill;
+        this.product = product;
+    }
 }

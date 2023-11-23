@@ -42,7 +42,9 @@ public class ProductSaveRequest implements Validator {
         if (description.length() < 1) {
             errors.rejectValue("description", "description.length", "Miêu tả chỉ phải có ít nhất là 1 ký tự");
         }
-
+        if ( poster.getId() == null) {
+            errors.rejectValue("poster", "poster.null", "Poster không được để trống.");
+        }
         if (!isNumeric(price)) {
             errors.rejectValue("price", "price.notNumeric", "Giá sản phẩm phải là một số.");
         } else {

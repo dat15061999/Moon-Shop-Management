@@ -18,5 +18,5 @@ public class ProductListResponse {
     private Boolean deleted;
 
     private BigDecimal price;
-    private String images;
-}
+    private String poster;
+    private String images;}
