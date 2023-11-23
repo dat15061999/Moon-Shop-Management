@@ -20,14 +20,11 @@ import java.io.IOException;
 public class FileRestController {
     private final UploadFileService uploadFileService;
 
-    @PostMapping
-    public Image upload(@RequestParam("avatar") MultipartFile avatar) throws IOException {
-        return uploadFileService.saveAvatar(avatar);
-    }
 //    @PostMapping
-//    public File upload1(@RequestParam("poster") MultipartFile poster,@RequestParam("image") MultipartFile image) throws IOException {
+//    public Image upload(@RequestParam("avatar") MultipartFile avatar) throws IOException {
 //        return uploadFileService.saveAvatar(avatar);
 //    }
+
     @PostMapping("/images")
     public Image uploadImage(@RequestParam("images") MultipartFile avatar) throws IOException {
         return uploadFileService.saveAvatar(avatar);

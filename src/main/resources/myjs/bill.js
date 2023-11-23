@@ -154,17 +154,12 @@ function renderItemStr(item) {
                         ${item.epayment}
                         </div>
                     </td>
-                    <td style="width: 120px;" >
-                        <a class="btn edit" data-id="${item.id}" onclick="onShowEdit(${item.id})" id="edit" style="padding: 0;     width: 21px;">
-                            <i class="fa-regular fa-pen-to-square text-primary"></i>
-                        </a>
-                        
-                    </td>
+
                 </tr>`
 }
-function formatCurrency(number) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
-}
+// function formatCurrency(number) {
+//     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+// }
 async function deleteItem(id){
 
     const { isConfirmed } = await Swal.fire({
