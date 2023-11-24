@@ -27,7 +27,7 @@ let pageable = {
 }
 window.onload = async () => {
     await getList();
-    onLoadSort();
+    // onLoadSort();
 }
 
 async function getList() {
@@ -119,16 +119,16 @@ function searchByPrice(min, max) {
     pageable.max = maxPrice;
     getList();
 }
-const onLoadSort = () => {
-    ePrice.onclick = () => {
-        let sort = 'price,desc'
-        if(pageable.sortService?.includes('price') &&  pageable.sortService?.includes('desc')){
-            sort = 'price,asc';
-        }
-        pageable.sortService = sort;
-        getList();
-    }
-}
+// const onLoadSort = () => {
+//     ePrice.onclick = () => {
+//         let sort = 'price,desc'
+//         if(pageable.sortService?.includes('price') &&  pageable.sortService?.includes('desc')){
+//             sort = 'price,asc';
+//         }
+//         pageable.sortService = sort;
+//         getList();
+//     }
+// }
 function getDataFromProduct(form) {
     event.preventDefault()
     const data = new FormData(form);
@@ -845,7 +845,6 @@ async function previewPoster(evt) {
     const files = evt.target.files
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        await previewPosterFile(file, i);
         if (file) {
             const formData = new FormData();
             formData.append("poster", file);
@@ -860,6 +859,8 @@ async function previewPoster(evt) {
                     if (result) {
                         const id = result.id;
                         idPoster.push(id);
+                        await previewPosterFile(file, i);
+
                     } else {
                         console.error('Image ID not found in the response.');
                     }

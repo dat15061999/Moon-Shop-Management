@@ -3,17 +3,24 @@ import com.cg.exception.AppUtils;
 import com.cg.model.*;
 import com.cg.model.dto.*;
 import com.cg.repository.ImageRepository;
+import com.cg.repository.ProductRepository;
 import com.cg.service.bill.IBillService;
 import com.cg.service.cart.ICartService;
 import com.cg.service.product.IProductService;
 import com.cg.service.userService.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +28,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
+@AllArgsConstructor
 public class HomeAPI {
     @Autowired
     private IProductService productService;
@@ -34,12 +42,14 @@ public class HomeAPI {
     private UserService userService;
     @Autowired
     private AppUtils appUtils;
+    private ProductRepository productRepository;
     @GetMapping
-    public ResponseEntity<?> showAll(){
+    public ResponseEntity<Page<?>> showAll(@PageableDefault(size = 1) Pageable pageable,
+                                           @RequestParam(defaultValue = "") String search,
+                                           @RequestParam(defaultValue = "1") BigDecimal min,
+                                           @RequestParam(defaultValue = "500000000000000000") BigDecimal max){
 
-        List<Product> products = productService.findAll();
-
-        List<ProductResDTO> productResDTOs = products.stream()
+        Page<ProductResDTO> products = productRepository.searchAllByService(search,pageable,min,max)
                 .map(product -> new ProductResDTO(
 
                         product.getId(),
@@ -54,11 +64,12 @@ public class HomeAPI {
 
                         product.getPoster(),
 
-                        imageRepository.findImagesByProductId(product.getId())))
-                .collect(Collectors.toList());
+                        imageRepository.findImagesByProductId(product.getId())));
 
-        return new ResponseEntity<>(productResDTOs, HttpStatus.OK);
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
+
     @GetMapping("{productId}")
     public ResponseEntity<?> getProductById(@PathVariable Long productId){
 

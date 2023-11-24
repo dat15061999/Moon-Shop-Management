@@ -73,21 +73,125 @@ page.elements.checkBill = $('#check');
 
 
 let productID = 0;
-
+let pageable = {
+    page: 1,
+    sortService: 'id,desc',
+    search: '',
+    min: 1,
+    max: 50000000000000,
+}
 async function fetchALlProduct() {
     return $.ajax({
-        url: page.url.getAllProducts
+        url: `http://localhost:8081/api/products?page=${pageable.page - 1 || 0}&sort=${pageable.sortService || 'id,desc'}&search=${pageable.search || ''}&min=${pageable.min || ''}&max=${pageable.max || ''}`
     });
 }
-
+const render =document.getElementById("render")
 page.commands.getAllProduct = async () => {
     const products = await fetchALlProduct();
+    pageable = {
+        ...pageable,
+        ...products
+    };
+    console.log(pageable)
+    genderPagination();
+    let str = '';
 
-    products.forEach(item => {
-        const str = page.commands.render(item)
+    products.content.forEach(item => {
+         str += page.commands.render(item)
 
-        page.elements.renderProduct.prepend(str);
     });
+    render.innerHTML = str
+}
+const ePriceRange1 = document.getElementById("priceRange1");
+const ePriceRange2 = document.getElementById("priceRange2");
+const ePriceRange3 = document.getElementById("priceRange3");
+const ePriceRange4 = document.getElementById("priceRange4");
+const ePriceRange5 = document.getElementById("priceRange5");
+ePriceRange1.addEventListener('change', function () { searchPrice(this.value); });
+ePriceRange2.addEventListener('change', function () { searchPrice(this.value); });
+ePriceRange3.addEventListener('change', function () { searchPrice(this.value); });
+ePriceRange4.addEventListener('change', function () { searchPrice(this.value); });
+ePriceRange5.addEventListener('change', function () { searchPrice(this.value); });
+
+function searchPrice(priceRange) {
+    console.log(priceRange);
+    const [min, max] = priceRange.split('-').map(Number);
+    searchByPrice(min, max);
+    page.commands.getAllProduct();
+}
+
+
+function searchByPrice(min, max) {
+    const minPrice = (min);
+    const maxPrice = parseFloat(max);
+    pageable.min = minPrice;
+    pageable.max = maxPrice;
+    page.commands.getAllProduct();
+}
+
+const paginationProduct = document.getElementById('paginationProduct')
+const genderPagination = () => {
+    paginationProduct.innerHTML = '';
+    let str = '';
+    const maxPagesToShow = 3;
+    const pagesToLeft = Math.floor(maxPagesToShow / 2);
+    let startPage = pageable.page - pagesToLeft;
+    if (startPage < 1) {
+        startPage = 1;
+    }
+    let endPage = startPage + maxPagesToShow - 1;
+    if (endPage > pageable.totalPages) {
+        endPage = pageable.totalPages;
+        startPage = Math.max(1, endPage - maxPagesToShow + 1); // Đảm bảo rằng số lượng trang được hiển thị không vượt quá totalPages
+    }
+
+    // Generate "Previous" button
+    str += `<li class="page-item ${pageable.first ? 'disabled' : ''}">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>`
+
+    // Generate page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        str += `<li class="page-item ${(pageable.page) === i ? 'active' : ''}" id="${i}" aria-current="page">
+                    <a class="page-link" href="#">${i}</a>
+                </li>`
+    }
+
+    // Generate "Next" button
+    str += `<li class="page-item ${pageable.last ? 'disabled' : ''}">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+            </li>`
+
+    paginationProduct.innerHTML = str;
+
+    const ePages = paginationProduct.querySelectorAll('li');
+    const ePrevious = ePages[0];
+    const eNext = ePages[ePages.length - 1];
+
+    ePrevious.onclick = () => {
+        if (pageable.page === 1) {
+            return;
+        }
+        pageable.page -= 1;
+        page.commands.getAllProduct();
+    }
+
+    eNext.onclick = () => {
+        if (pageable.page === pageable.totalPages) {
+            return;
+        }
+        pageable.page += 1;
+        page.commands.getAllProduct();    }
+    for (let i = 1; i < ePages.length - 1; i++) {
+        const currentPageId = ePages[i].id;
+
+        if (currentPageId === pageable.page) {
+            continue;
+        }
+        ePages[i].onclick = () => {
+            pageable.page = parseInt(currentPageId, 10); // Convert id to integer
+            page.commands.getAllProduct();        };
+    }
 }
 
 page.commands.render = (obj) => {
