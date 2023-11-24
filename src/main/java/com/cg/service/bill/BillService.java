@@ -95,4 +95,14 @@ public class BillService implements IBillService {
         return bill;
 
     }
+
+    @Override
+    public List<BillDetail> getBillDetailByBill_Id(Long idBill) {
+        return billDetailRepository.getBillDetailByBill_Id(idBill);
+    }
+
+    @Override
+    public List<Bill> getAllByUser_Id(Long idCustomer) {
+        return billRepository.getAllByUser_Id(idCustomer);
+    }
 }

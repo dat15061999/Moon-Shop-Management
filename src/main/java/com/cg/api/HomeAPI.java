@@ -1,4 +1,5 @@
 package com.cg.api;
+
 import com.cg.exception.AppUtils;
 import com.cg.model.*;
 import com.cg.model.dto.*;
@@ -42,13 +43,13 @@ public class HomeAPI {
     private UserService userService;
     @Autowired
     private AppUtils appUtils;
+
     private ProductRepository productRepository;
     @GetMapping
     public ResponseEntity<Page<?>> showAll(@PageableDefault(size = 1) Pageable pageable,
                                            @RequestParam(defaultValue = "") String search,
                                            @RequestParam(defaultValue = "1") BigDecimal min,
                                            @RequestParam(defaultValue = "500000000000000000") BigDecimal max){
-
         Page<ProductResDTO> products = productRepository.searchAllByService(search,pageable,min,max)
                 .map(product -> new ProductResDTO(
 
@@ -71,16 +72,17 @@ public class HomeAPI {
     }
 
     @GetMapping("{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable Long productId){
+    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
 
         Optional<Product> product = productService.findById(productId);
 
         ProductResDTO productResDTO = product.orElseThrow().toProductResDTO();
 
-        return new ResponseEntity<>(productResDTO,HttpStatus.OK);
+        return new ResponseEntity<>(productResDTO, HttpStatus.OK);
     }
+
     @PostMapping("/cart")
-    public ResponseEntity<?> addProToCart(@RequestBody CartDetailReqDTO cartDetailReqDTO){
+    public ResponseEntity<?> addProToCart(@RequestBody CartDetailReqDTO cartDetailReqDTO) {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         Optional<Cart> cart = cartService.findByIdCustomer(idCustomer);
@@ -91,7 +93,7 @@ public class HomeAPI {
 
             cartDetail.setCart(cart.get());
 
-            if (cartService.existsByIdProduct(cartDetail.getProduct().getId(),idCustomer) > 0){
+            if (cartService.existsByIdProduct(cartDetail.getProduct().getId(), idCustomer) > 0) {
 
                 cartService.saveCartDetailIsExitWithProduct(cartDetail);
             } else {
@@ -109,60 +111,62 @@ public class HomeAPI {
 
             cartService.saveCartDetail(cartDetail);
         }
-        return new ResponseEntity<>(cartDetailReqDTO,HttpStatus.OK);
+        return new ResponseEntity<>(cartDetailReqDTO, HttpStatus.OK);
     }
+
     @GetMapping("/cart")
-    public ResponseEntity<?> getCarts(){
+    public ResponseEntity<?> getCarts() {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         List<CartDetailResDTO> cartDetails = cartService.getAllByCustomer_Id(idCustomer);
 
-        return new ResponseEntity<>(cartDetails,HttpStatus.OK);
+        return new ResponseEntity<>(cartDetails, HttpStatus.OK);
     }
 
     @GetMapping("delete/{idCartDetail}")
-    public ResponseEntity<?> deleteProductFromCart(@PathVariable Long idCartDetail){
+    public ResponseEntity<?> deleteProductFromCart(@PathVariable Long idCartDetail) {
 
         cartService.deleteCartDetail(idCartDetail);
 
-        return new ResponseEntity<>("OK",HttpStatus.OK);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
+
     @GetMapping("/cartDetail")
-    public  ResponseEntity<?> getCountDetail(){
-       Long idCustomer = userService.getCurrentCustomer().get().getId();
+    public ResponseEntity<?> getCountDetail() {
+        Long idCustomer = userService.getCurrentCustomer().get().getId();
 
-       Long countCartDetailByCustomer =  cartService.getCountDetail(idCustomer);
+        Long countCartDetailByCustomer = cartService.getCountDetail(idCustomer);
 
-       return new ResponseEntity<>(countCartDetailByCustomer,HttpStatus.OK);
+        return new ResponseEntity<>(countCartDetailByCustomer, HttpStatus.OK);
     }
+
     @PatchMapping("/cartDetail/{idCartDetail}")
-    public  ResponseEntity<?> changeTotalProductDetail(@PathVariable Long idCartDetail){
+    public ResponseEntity<?> changeTotalProductDetail(@PathVariable Long idCartDetail) {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         Optional<CartDetail> cartDetail = cartService.findByIdCartDetail(idCartDetail);
 
 
-
-
-        return new ResponseEntity<>(cartDetail,HttpStatus.OK);
+        return new ResponseEntity<>(cartDetail, HttpStatus.OK);
     }
 
     @GetMapping("/customer")
-    public  ResponseEntity<?> getCustomerByID(){
+    public ResponseEntity<?> getCustomerByID() {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         Customer customer = userService.findById(idCustomer);
 
         CustomerResDTO customerResDTO = customer.toCustomerResDTO();
 
-        return new ResponseEntity<>(customerResDTO,HttpStatus.OK);
+        return new ResponseEntity<>(customerResDTO, HttpStatus.OK);
     }
+
     @PatchMapping("/customer")
-    public  ResponseEntity<?> updateCustomerByID( @Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult){
+    public ResponseEntity<?> updateCustomerByID(@Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult) {
 
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
-        if (bindingResult.hasFieldErrors()){
+        if (bindingResult.hasFieldErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
 
@@ -178,24 +182,24 @@ public class HomeAPI {
 
         userService.save(customer);
 
-        return new ResponseEntity<>(customer,HttpStatus.OK);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @PostMapping("/bill")
-    public  ResponseEntity<?> createBill(){
+    public ResponseEntity<?> createBill() {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
         Optional<Cart> cart = cartService.findByIdCustomer(idCustomer);
 
         if (cart.isEmpty()) {
-            return new ResponseEntity<>(403,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(403, HttpStatus.NOT_FOUND);
         }
 
         List<CartDetail> cartDetails = cartService.findCartDetailByCartCustomer_Id(idCustomer);
 
         Bill bill = billService.saveBillFromCart(cart.get());
 
-        for (int i = 0 ; cartDetails.size()-i > 0; i++) {
+        for (int i = 0; cartDetails.size() - i > 0; i++) {
 
             billService.saveBillDetailFromDetail(bill, cartDetails.get(i));
 
@@ -204,15 +208,16 @@ public class HomeAPI {
 
         cartService.deleteById(cart.get().getId());
 
-        return new ResponseEntity<>("ok",HttpStatus.OK);
+        return new ResponseEntity<>("ok", HttpStatus.OK);
     }
+
     @GetMapping("/bill")
-    public  ResponseEntity<?> getAllBill(){
+    public ResponseEntity<?> getAllBill() {
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
+        List<Bill> bills = billService.getAllByUser_Id(idCustomer);
 
-
-        return new ResponseEntity<>("ok",HttpStatus.OK);
+        return new ResponseEntity<>(bills, HttpStatus.OK);
     }
 
 }

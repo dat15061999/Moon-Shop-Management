@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BillRepository extends JpaRepository<Bill,Long> {
     @Query(value = "SELECT b FROM Bill b WHERE b.deleted = false AND " +
@@ -15,4 +17,6 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
 
             "EXISTS (SELECT 1 FROM BillDetail bp WHERE bp.bill = b AND bp.product.productName LIKE %:search%))")
     Page<Bill> searchAllByBill(@Param("search") String search, Pageable pageable);
+
+    List<Bill> getAllByUser_Id(Long idCustomer);
 }
