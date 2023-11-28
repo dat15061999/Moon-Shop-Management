@@ -37,7 +37,6 @@ public class SpringSecurity {
                                 .requestMatchers("/index").hasAnyRole("USER")
                                 .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/css/**","/img/**", "/js/**", "/lib/**", "/mail/**").permitAll()
-
                                 .anyRequest().authenticated()
                 ).formLogin(
                         form -> form

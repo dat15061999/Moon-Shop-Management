@@ -27,6 +27,7 @@ public class HomeController {
     public ModelAndView showShop() {
         ModelAndView view = new ModelAndView("shop");
         view.addObject("customer", userService.getCurrentCustomer().get());
+        view.addObject("shop", true);
         return view;
     }
 
@@ -54,13 +55,13 @@ public class HomeController {
     }
 
 
-    @GetMapping("/dashboard")
-    public ModelAndView dash() {
-        modelAndView.setViewName("dashboard");
-        ModelAndView modelAndView = Login();
-        modelAndView.addObject("someKey", "someValue");
-        return modelAndView;
-    }
+//    @GetMapping("/user")
+//    public ModelAndView dash() {
+//        modelAndView.setViewName("user");
+//        ModelAndView modelAndView = Login();
+//        modelAndView.addObject("someKey", "someValue");
+//        return modelAndView;
+//    }
 
     @GetMapping("/product")
     public ModelAndView pro() {

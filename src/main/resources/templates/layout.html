@@ -17,7 +17,6 @@
         class="light-style layout-menu-fixed"
         dir="ltr"
         data-theme="theme-default"
-        data-assets-path="../assets/"
         data-template="vertical-menu-template-free"
         xmlns:th="http://www.thymeleaf.org"
         xmlns="http://www.w3.org/1999/html"
@@ -86,7 +85,7 @@
 
                             <div style="padding-right: 20px">
                                 <a style=" background-color: #6b685d29;    border-radius: 31px;
-    border: 1px solid; margin: 28px; padding: 7px 68px  " class="btn  d-none d-lg-block " th:text="${user.name}"></a>
+    border: 1px solid; padding: 7px 68px  " class="btn  d-none d-lg-block " th:text="${user.name}"></a>
                             </div>
                         </div>
                     </a>
@@ -99,12 +98,12 @@
 
                 <ul class="menu-inner py-1">
                     <!-- Dashboard -->
-                    <li class="menu-item " id="menu-dashboard">
-                        <a href="/home/dashboard" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                            <div data-i18n="Analytics">Dashboard</div>
-                        </a>
-                    </li>
+<!--                    <li class="menu-item " id="menu-dashboard">-->
+<!--                        <a href="/home/dashboard" class="menu-link">-->
+<!--                            <i class="menu-icon tf-icons bx bx-home-circle"></i>-->
+<!--                            <div data-i18n="Analytics">Dashboard</div>-->
+<!--                        </a>-->
+<!--                    </li>-->
                     <li class="menu-header small text-uppercase">
                         <span class="menu-header-text">Pages</span>
                     </li>

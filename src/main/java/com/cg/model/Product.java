@@ -23,6 +23,8 @@ public class Product {
     @Column(name = "product_price")
     private BigDecimal productPrice;
     private float score;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String status;
     private Boolean deleted;

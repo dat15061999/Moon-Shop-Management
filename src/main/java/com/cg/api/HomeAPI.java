@@ -1,6 +1,7 @@
 package com.cg.api;
 
 import com.cg.exception.AppUtils;
+import com.cg.exception.GlobalExceptionHandler;
 import com.cg.model.*;
 import com.cg.model.dto.*;
 import com.cg.repository.ImageRepository;
@@ -8,6 +9,7 @@ import com.cg.repository.ProductRepository;
 import com.cg.service.bill.IBillService;
 import com.cg.service.cart.ICartService;
 import com.cg.service.product.IProductService;
+import com.cg.service.product.request.ProductSaveRequest;
 import com.cg.service.userService.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,9 +21,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +50,7 @@ public class HomeAPI {
 
     private ProductRepository productRepository;
     @GetMapping
-    public ResponseEntity<Page<?>> showAll(@PageableDefault(size = 1) Pageable pageable,
+    public ResponseEntity<Page<?>> showAll(@PageableDefault(size = 6) Pageable pageable,
                                            @RequestParam(defaultValue = "") String search,
                                            @RequestParam(defaultValue = "1") BigDecimal min,
                                            @RequestParam(defaultValue = "500000000000000000") BigDecimal max){
@@ -141,13 +145,32 @@ public class HomeAPI {
     }
 
     @PatchMapping("/cartDetail/{idCartDetail}")
-    public ResponseEntity<?> changeTotalProductDetail(@PathVariable Long idCartDetail) {
-        Long idCustomer = userService.getCurrentCustomer().get().getId();
+    public ResponseEntity<?> changeTotalProductDetail(@PathVariable Long idCartDetail,@Valid @RequestBody CartDetailChangeAmountReqDTO cartDetailChangeAmountReqDTO, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            List<ErrorDTO> errors = new ArrayList<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                ErrorDTO errorDTO = new ErrorDTO();
+                errorDTO.setField(error.getField());
+                errorDTO.setMessage(error.getDefaultMessage());
+                errors.add(errorDTO);
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
 
         Optional<CartDetail> cartDetail = cartService.findByIdCartDetail(idCartDetail);
 
+        CartDetail newCartDetail = cartDetail.get();
 
-        return new ResponseEntity<>(cartDetail, HttpStatus.OK);
+        newCartDetail.setQuantity(cartDetailChangeAmountReqDTO.getQuantity());
+
+        BigDecimal newTotal = BigDecimal.valueOf(cartDetailChangeAmountReqDTO.getQuantity());
+
+        newCartDetail.setTotalAmount(newCartDetail.getProductPrice().multiply(newTotal));
+
+        cartService.saveCartDetail(newCartDetail);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/customer")
@@ -163,6 +186,7 @@ public class HomeAPI {
 
     @PatchMapping("/customer")
     public ResponseEntity<?> updateCustomerByID(@Valid @RequestBody CustomerReqDTO customerReqDTO, BindingResult bindingResult) {
+        customerReqDTO.validate(customerReqDTO, bindingResult);
 
         Long idCustomer = userService.getCurrentCustomer().get().getId();
 
@@ -217,7 +241,18 @@ public class HomeAPI {
 
         List<Bill> bills = billService.getAllByUser_Id(idCustomer);
 
-        return new ResponseEntity<>(bills, HttpStatus.OK);
+        List<BillResDTO> billResDTOS = bills.stream().map(Bill::toBillResDTO).toList();
+
+        return new ResponseEntity<>(billResDTOS, HttpStatus.OK);
+    }
+    @GetMapping("/bill/{idBill}")
+    public ResponseEntity<?> getAllBillDetailById(@PathVariable Long idBill) {
+
+        List<BillDetail> bills = billService.getBillDetailByBill_Id(idBill);
+
+        List<BillDetailResDTO> billDetailResDTOS = bills.stream().map(BillDetail::toBillDetailResDTO).toList();
+
+        return new ResponseEntity<>(billDetailResDTOS, HttpStatus.OK);
     }
 
 }

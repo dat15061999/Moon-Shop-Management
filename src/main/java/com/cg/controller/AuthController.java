@@ -54,7 +54,7 @@ public class AuthController {
             } else {
                 modelAndView.addObject("loggedIn", false);
             }
-            return "redirect:/home/dashboard";
+            return "redirect:/home/user";
         }else{
 
             return "redirect:/home" ;

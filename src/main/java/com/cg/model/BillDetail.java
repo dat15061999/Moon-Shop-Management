@@ -1,4 +1,5 @@
 package com.cg.model;
+import com.cg.model.dto.BillDetailResDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,5 +40,14 @@ public class BillDetail {
     public BillDetail(Bill bill, Product product) {
         this.bill = bill;
         this.product = product;
+    }
+    public BillDetailResDTO toBillDetailResDTO(){
+        return new BillDetailResDTO()
+                .setImage(product.getPoster().getUrl())
+                .setProductPrice(productPrice)
+                .setProductName(productName)
+                .setQuantity(quantity)
+                .setTotalAmount(totalAmount)
+                ;
     }
 }

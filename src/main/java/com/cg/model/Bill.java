@@ -1,6 +1,7 @@
 package com.cg.model;
 
 
+import com.cg.model.dto.BillResDTO;
 import com.cg.model.enums.EPayment;
 import com.cg.model.enums.EStatus;
 import jakarta.persistence.*;
@@ -40,5 +41,13 @@ public class Bill {
     private List<BillDetail> billDetailList;
 
     private BigDecimal total;
+
+    public BillResDTO toBillResDTO () {
+        return new BillResDTO()
+                .setDate(create_at.toLocalDate())
+                .setTotal(total)
+                .setId(id)
+                ;
+    }
 }
 

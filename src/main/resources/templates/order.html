@@ -54,24 +54,13 @@
                 </div>
             </form>
             <h5 class="section-title position-relative text-uppercase mb-3"><span
-                    class="bg-secondary pr-3">Cart Summary</span></h5>
+                    class="bg-secondary pr-3"></span></h5>
             <div class="bg-light p-30 mb-5">
                 <div class="border-bottom pb-2">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h6>Subtotal</h6>
-                        <h6>$150</h6>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <h6 class="font-weight-medium">Shipping</h6>
-                        <h6 class="font-weight-medium">$10</h6>
-                    </div>
                 </div>
                 <div class="pt-2">
-                    <div class="d-flex justify-content-between mt-2">
-                        <h5>Total</h5>
-                        <h5>$160</h5>
-                    </div>
-                    <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+
+                    <a class="btn btn-block btn-primary font-weight-bold my-3 py-3" href="/home/shop">Buy Again</a>
                 </div>
             </div>
         </div>
@@ -88,6 +77,8 @@
 <th:block th:replace="~{/layout/modalCustomer}"></th:block>
 <!--Modal Customer end-->
 
+<th:block th:replace="~{/layout/modalBIllDetail}"></th:block>
+
 
 <!-- Footer Start -->
 <th:block th:replace="~{layout/footer-scrip::footer}"></th:block>
@@ -100,6 +91,11 @@
 <script src="/js/appUtils.js"></script>
 
 <script src="/js/modalMain.js"></script>
+
+<script src="/js/home.js"></script>
+
+
+
 </body>
 
 </html>

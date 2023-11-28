@@ -17,11 +17,14 @@
             <div class="col-md-12 form-group">
               <label>Full Name</label>
               <input class="form-control" type="text" id="name">
+              <label for="name" id="nameErrors" class="error-message" style="color: red;"></label>
 
             </div>
             <div class="col-md-12 form-group">
               <label>E-mail</label>
               <input class="form-control" type="text"  id="email">
+              <label for="email" id="emailErrors" class="error-message" style="color: red;"></label>
+
             </div>
             <div class="col-md-12 form-group">
               <label>Mobile No</label>
@@ -30,10 +33,11 @@
             <div class="col-md-12 form-group">
               <label>Date of birth</label>
               <input class="form-control" type="date"  id="dob">
+              <label for="dob" id="dobErrors" class="error-message" style="color: red;"></label>
             </div>
             <div class="col-md-12 form-group">
               <button class="btn btn-success" type="button" id="btn-update-customer">Update</button>
-              <button class="btn btn-warning" type="button" >Close</button>
+              <button class="btn btn-warning" type="button"  id="closeUser">Close</button>
             </div>
           </form>
         </div>

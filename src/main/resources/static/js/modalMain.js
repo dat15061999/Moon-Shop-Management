@@ -1,6 +1,6 @@
 const page = {
     url: {
-        getAllProducts: AppUtils.BASE_PRODUCT_API,
+        // getAllProducts: AppUtils.BASE_PRODUCT_API,
         getProductById: AppUtils.BASE_PRODUCT_API + "/",
         addProductToCart: AppUtils.BASE_ADD_PRO_TO_CART_API,
         getAllCartList: AppUtils.BASE_All_CARTS_API,
@@ -10,13 +10,15 @@ const page = {
         updateCustomerById: AppUtils.BASE_UPDATE_CUSTOMER_BY_ID_API,
         createBillFromCart: AppUtils.BASE_CREATE_BILL,
         getAllBill: AppUtils.BASE_ALL_BILL,
+        getBill: AppUtils.BASE_GET_BILL_BY_ID,
+        changeQuantityProOnCart: AppUtils.BASE_CHANGE_QUANTITY_CART_DETAIL_API,
     },
     elements: {},
     loadData: {},
     commands: {}
 }
 
-page.elements.renderProduct = $('#render');
+
 page.elements.modalProductDetail = $('#modalPro');
 
 //Modal product
@@ -38,9 +40,8 @@ page.elements.btnOpenCart = $('.btn-cart');
 page.elements.renderListCart = $('.renderCart');
 page.elements.modalCart = $('#modalCart');
 
-page.elements.countCartDetails = $('#show-count-cart-detail');
+
 page.elements.btnDeleteProFromCart = $('button.btn-delete');
-page.elements.renderCartOnCheckout = $('.renderCarts');
 page.elements.btnOpenCheckout = $('#btn-open-checkout');
 
 //Modal Customer
@@ -61,183 +62,23 @@ page.elements.phoneCustomerCheckout = $('#phoneCheckout');
 page.elements.dobCustomerCheckout = $('#dobCheckout');
 page.elements.btnBill = $('#btnAddBill');
 //Page Order
-page.elements.renderOrder = $('#renderOrders')
-page.elements.btnShowBill = $('.btnShowBill')
 
 
 page.elements.btnCartToCheckout = $('#btn-to-checkout');
 
 page.elements.frmBill = $('#frmAddToBIll');
 
-page.elements.checkBill = $('#check');
-
 
 let productID = 0;
-let pageable = {
-    page: 1,
-    sortService: 'id,desc',
-    search: '',
-    min: 1,
-    max: 50000000000000,
-}
-async function fetchALlProduct() {
-    return $.ajax({
-        url: `http://localhost:8081/api/products?page=${pageable.page - 1 || 0}&sort=${pageable.sortService || 'id,desc'}&search=${pageable.search || ''}&min=${pageable.min || ''}&max=${pageable.max || ''}`
-    });
-}
-const render =document.getElementById("render")
-page.commands.getAllProduct = async () => {
-    const products = await fetchALlProduct();
-    pageable = {
-        ...pageable,
-        ...products
-    };
-    console.log(pageable)
-    genderPagination();
-    let str = '';
-
-    products.content.forEach(item => {
-         str += page.commands.render(item)
-
-    });
-    render.innerHTML = str
-}
-const ePriceRange1 = document.getElementById("priceRange1");
-const ePriceRange2 = document.getElementById("priceRange2");
-const ePriceRange3 = document.getElementById("priceRange3");
-const ePriceRange4 = document.getElementById("priceRange4");
-const ePriceRange5 = document.getElementById("priceRange5");
-ePriceRange1.addEventListener('change', function () { searchPrice(this.value); });
-ePriceRange2.addEventListener('change', function () { searchPrice(this.value); });
-ePriceRange3.addEventListener('change', function () { searchPrice(this.value); });
-ePriceRange4.addEventListener('change', function () { searchPrice(this.value); });
-ePriceRange5.addEventListener('change', function () { searchPrice(this.value); });
-
-function searchPrice(priceRange) {
-    console.log(priceRange);
-    const [min, max] = priceRange.split('-').map(Number);
-    searchByPrice(min, max);
-    page.commands.getAllProduct();
-}
 
 
-function searchByPrice(min, max) {
-    const minPrice = (min);
-    const maxPrice = parseFloat(max);
-    pageable.min = minPrice;
-    pageable.max = maxPrice;
-    page.commands.getAllProduct();
-}
-
-const paginationProduct = document.getElementById('paginationProduct')
-const genderPagination = () => {
-    paginationProduct.innerHTML = '';
-    let str = '';
-    const maxPagesToShow = 3;
-    const pagesToLeft = Math.floor(maxPagesToShow / 2);
-    let startPage = pageable.page - pagesToLeft;
-    if (startPage < 1) {
-        startPage = 1;
-    }
-    let endPage = startPage + maxPagesToShow - 1;
-    if (endPage > pageable.totalPages) {
-        endPage = pageable.totalPages;
-        startPage = Math.max(1, endPage - maxPagesToShow + 1); // Đảm bảo rằng số lượng trang được hiển thị không vượt quá totalPages
-    }
-
-    // Generate "Previous" button
-    str += `<li class="page-item ${pageable.first ? 'disabled' : ''}">
-              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>`
-
-    // Generate page numbers
-    for (let i = startPage; i <= endPage; i++) {
-        str += `<li class="page-item ${(pageable.page) === i ? 'active' : ''}" id="${i}" aria-current="page">
-                    <a class="page-link" href="#">${i}</a>
-                </li>`
-    }
-
-    // Generate "Next" button
-    str += `<li class="page-item ${pageable.last ? 'disabled' : ''}">
-              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
-            </li>`
-
-    paginationProduct.innerHTML = str;
-
-    const ePages = paginationProduct.querySelectorAll('li');
-    const ePrevious = ePages[0];
-    const eNext = ePages[ePages.length - 1];
-
-    ePrevious.onclick = () => {
-        if (pageable.page === 1) {
-            return;
-        }
-        pageable.page -= 1;
-        page.commands.getAllProduct();
-    }
-
-    eNext.onclick = () => {
-        if (pageable.page === pageable.totalPages) {
-            return;
-        }
-        pageable.page += 1;
-        page.commands.getAllProduct();    }
-    for (let i = 1; i < ePages.length - 1; i++) {
-        const currentPageId = ePages[i].id;
-
-        if (currentPageId === pageable.page) {
-            continue;
-        }
-        ePages[i].onclick = () => {
-            pageable.page = parseInt(currentPageId, 10); // Convert id to integer
-            page.commands.getAllProduct();        };
-    }
-}
-
-page.commands.render = (obj) => {
-    return `
-                <div class="col-lg-4 col-md-6 col-sm-6 pb-1" >
-                        <div class="product-item bg-light mb-4">
-                            <div class="product-img position-relative overflow-hidden" >
-                                <img class="img-fluid w-100" src=${obj.poster.url} style="width: 280px;height: 280px" alt="">
-                                <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-shopping-cart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-sync-alt"></i></a>
-                                    <button class="btn btn-outline-dark btn-square search" id="tr_${obj.id}"    ><i
-                                            class="fa fa-search"></i></button>
-                                </div>
-                            </div>
-                            <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="">${obj.productName}</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>${obj.productPrice}$</h5>
-                                    <h6 class="text-muted ml-2">
-                                        <del>$999.00</del>
-                                    </h6>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>(99)</small>
-                                </div>
-                            </div>
-                        </div>
-                   </div>
-    `;
-}
 //render bill
 page.commands.renderBill = (obj) => {
     return `
                 <tr id="bi_${obj.id}">
-                    <td class="align-middle"><h3>ABC0${obj.id}</h3></td>
-                    <td class="align-middle"><h3>${obj.date}</h3></td>
-                    <td class="align-middle"><h3>${obj.total}$</h3></td>
+                    <td class="align-middle"><h4>ABC0${obj.id}</h4></td>
+                    <td class="align-middle"><h4>${obj.date}</h4></td>
+                    <td class="align-middle"><h4>${obj.total} đ</h4></td>                  
                     <td class="align-middle">
                         <button class="btn btn-sm btn-success btnShowBill"><i class="fas fa-tasks"
                                                                                    style="font-size: 20px"></i></button>
@@ -247,7 +88,7 @@ page.commands.renderBill = (obj) => {
 }
 page.commands.renderBillPage = async () => {
 
-    page.elements.renderOrder.empty();
+    $('.renderOrders').empty();
 
     const listCart = await $.ajax({
         url: page.url.getAllBill,
@@ -255,13 +96,53 @@ page.commands.renderBillPage = async () => {
     });
 
     listCart.forEach(item => {
-        const str = page.commands.renderBillPage(item);
 
-        page.elements.renderOrder.prepend(str);
+        const str = page.commands.renderBill(item);
+
+        $('.renderOrders').prepend(str);
 
     });
 
+    handleClickBill();
+}
 
+function handleClickBill() {
+
+    $('.btnShowBill').on('click', async function () {
+        const idBill = $(this).closest('tr').attr('id').replace('bi_', '')
+
+        await $.ajax({
+            url: page.url.getBill + idBill,
+            method: "GET"
+        })
+            .done((data) => {
+
+
+                $('.renderBillDetail').empty();
+
+                data.forEach(item => {
+                    const str = page.commands.renderBillDetail(item);
+
+                    $('.renderBillDetail').prepend(str)
+                });
+
+                $('#modalBillDetail').modal('show');
+
+            })
+    })
+}
+
+page.commands.renderBillDetail = (obj) => {
+    return `
+               <tr>
+                <td class="align-middle"><img src=${obj.image} alt="" style="width: 50px;">                  
+                </td>
+                <td class="align-middle"><h5>${obj.productName}</h5></td>
+                <td class="align-middle"><h5>${obj.productPrice} đ</h5></td>
+                <td class="align-middle"><h5>${obj.quantity}</h5></td>
+                <td class="align-middle"><h5>${obj.totalAmount} đ</h5></td>                
+              </tr>
+    `;
 }
 
 page.elements.minus.on('click', function () {
@@ -275,16 +156,35 @@ page.commands.changeClickPlusOrMinus = () => {
     const price = parseFloat(page.elements.priceProduct.text());
     const amount = parseFloat(page.elements.amountIn.val());
     const newPrice = price * amount;
-    page.elements.totalAmount.text(newPrice + "$");
+    page.elements.totalAmount.text(newPrice + "đ");
 }
 
 page.commands.handleClick = async () => {
     $('button.search').on('click', function () {
         productID = $(this).attr('id').replace('tr_', '');
-
         page.commands.handleClickButtonSearch(productID);
     })
+
 }
+page.commands.handleClickButtonSearch = (productID) => {
+    $.ajax({
+        url: page.url.getProductById + productID,
+    })
+        .done(async (data) => {
+            console.log(data)
+            page.elements.nameProduct.text(data.productName)
+            // page.elements.viewProduct
+            page.elements.priceProduct.text(data.productPrice + "đ")
+            page.elements.totalAmount.text(data.productPrice + "đ")
+            page.elements.descriptionProduct.text(data.description)
+            page.elements.imageProduct.attr('src', data.poster.url)
+            page.elements.amountIn.val(1);
+            page.elements.idProduct.val(data.id)
+
+            page.elements.modalProductDetail.modal('show');
+        })
+}
+
 //Modal customer
 page.elements.btnCustomer.on('click', function () {
     page.commands.renderCustomer();
@@ -314,36 +214,18 @@ page.commands.renderCustomer = () => {
 // Update customer
 page.elements.btnUpdateCustomer.on('click', async () => {
     // page.elements.frmUpdateCustomer.trigger('submit');
+
+
     await page.commands.updateCustomer();
+
 })
-
-// page.elements.frmUpdateCustomer.validate({
-//     onkeyup: function (element) {
-//         $(element).valid()
-//     },
-//     onclick: false,
-//     onfocusout: false,
-//     errorLabelContainer: "#modalCustomer .area-error",
-//     errorPlacement: function (error, element) {
-//         error.appendTo("#modalCustomer .area-error");
-//     },
-//     showErrors: function (errorMap, errorList) {
-//         if (this.numberOfInvalids() > 0) {
-//             $("#modalCustomer .area-error").removeClass("hide").addClass("show");
-//         } else {
-//             $("#modalCustomer .area-error").removeClass("show").addClass("hide").empty();
-//
-//             $("#modalCustomer input.error").removeClass("error");
-//         }
-//         this.defaultShowErrors();
-//     },
-//     submitHandler: async () => {
-//        await page.commands.updateCustomer();
-//     }
-// })
-
-page.commands.updateCustomer = async () => {
-
+$('#closeUser').on('click',()=>{
+    page.elements.modalCustomer.modal('hide');
+    document.getElementById("nameErrors").innerText="";
+    document.getElementById("emailErrors").innerText="";
+    document.getElementById("dobErrors").innerText="";
+})
+page.commands.updateCustomer = async (e) => {
     const name = page.elements.nameCustomer.val();
 
     const email = page.elements.emailCustomer.val();
@@ -359,18 +241,90 @@ page.commands.updateCustomer = async () => {
         dob,
 
     }
-    await $.ajax({
-        url: page.url.updateCustomerById,
-        method: "PATCH",
-        contentType: "application/json",
-        data: JSON.stringify(data),
-    })
+    const response = await fetch(page.url.updateCustomerById, {
 
-    await page.commands.renderCustomerToPageCheckOut();
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    if (response.ok) {
+        $('#staticBackdrop').modal('hide');
 
-    AppUtils.showSuccess("Update customer successfully!");
+        Swal.fire({
+            title: 'Đang xử lý',
+            text: 'Vui lòng chờ...',
+            willOpen: () => {
+                Swal.showLoading();
+            },
+            timer: 2000, // Đợi 2 giây (2000ms)
+            showCancelButton: false,
+            showConfirmButton: false,
+            allowOutsideClick: false
+        }).then(async (result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                // Sau khi đợi 2 giây, hiển thị thông báo thành công
+                await Swal.fire({
+                    title: 'Created',
+                    text: 'Tạo thành công.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    position: 'top-start',
+                    timer: 1500 // Hiển thị thông báo thành công trong 1,5 giây (1500ms)
+                });
+                await   page.elements.modalCustomer.modal('hide');
 
-    page.elements.modalCustomer.modal('hide');
+
+            }
+        });
+    } else {
+        const responseJSON = await response.json();
+        if (responseJSON) {
+            const errorFullNameElement = document.getElementById("nameErrors");
+            if ("name" in responseJSON) {
+                errorFullNameElement.style.display = "block";
+                errorFullNameElement.innerText = responseJSON.name;
+                errorFullNameElement.style.color = "red"
+            }
+
+            const productsErrorElement = document.getElementById("dobErrors");
+            if ("dob" in responseJSON) {
+                productsErrorElement.style.display = "block";
+                productsErrorElement.innerText = responseJSON.dob;
+                productsErrorElement.style.color = "red"
+            }
+            const emailErrorElement = document.getElementById("emailErrors");
+            if ("email" in responseJSON) {
+                emailErrorElement.style.display = "block";
+                emailErrorElement.innerText = responseJSON.email
+                emailErrorElement.style.color = "red"
+            }
+        }
+    }
+
+    // await $.ajax({
+    //     url: page.url.updateCustomerById,
+    //     method: "PATCH",
+    //     contentType: "application/json",
+    //     data: JSON.stringify(data),
+    //     // error: function (xhr) {
+    //     //     const response = JSON.parse(xhr.responseText);
+    //     //     response.forEach(error => {
+    //     //         $('.error_'+idCartDetail).text(error.message);
+    //     //     });
+    //     //
+    //     //     $('.hidden-span').css('display', 'inline');
+    //     // },
+    // })
+    //     .fail(async (data) =>{
+    //        await console.log(data)
+    //     })
+
+    // await page.commands.renderCustomerToPageCheckOut();
+
+    // AppUtils.showSuccess("Update customer successfully!");
+
 
 }
 //
@@ -389,25 +343,26 @@ page.commands.renderCart = (obj) => {
              <td class="align-middle">
                  ${obj.productName}
              </td>           
-             <td class="align-middle">${obj.productPrice}$</td>
+             <td class="align-middle" id="pricePro_${obj.idCartDetail}">${obj.productPrice} đ</td>
              <td class="align-middle">
                  <div class="input-group quantity mx-auto" style="width: 100px;">
                      <div class="input-group-btn">
                          <button class="btn btn-sm btn-primary btn-minus-cart" type="button">
                              <i class="fa fa-minus"></i>
                          </button>
-                     </div>
-                     <input type="text" id="quantityC"
-                            class="form-control form-control-sm bg-secondary border-0 text-center"
-                            value="${obj.quantity}" readonly>
+                     </div>                    
+                     <input type="text"
+                            class="form-control form-control-sm bg-secondary border-0 text-center " id="quantityC${obj.idCartDetail}"
+                            value="${obj.quantity}">                    
                      <div class="input-group-btn">
                          <button class="btn btn-sm btn-primary btn-plus-cart" type="button">
                              <i class="fa fa-plus"></i>
                          </button>
                      </div>
+                    <span class="hidden-span error_${obj.idCartDetail}" style="display: none; color: red"></span>
                  </div>
              </td>
-             <td class="align-middle totalAmountProduct">${obj.totalAmount}$</td>
+             <td class="align-middle totalAmountProduct" id="totalAmountPro_${obj.idCartDetail}">${obj.totalAmount} đ</td>
              <td class="align-middle">
                  <button class="btn btn-sm btn-danger btn-delete-product" type="button"><i class="fa fa-times"></i></button>
              </td>
@@ -415,47 +370,91 @@ page.commands.renderCart = (obj) => {
     `
         ;
 }
-page.commands.handleClickCart =()=> {
-    $('button.btn-plus-cart').on('click',function (){
-        const idP = $(this).closest('tr').attr('id').replace('cd_','');
-        $('#quantityC').val(parseFloat($('#quantityC').val())+1);
 
-    });
-    $('button.btn-minus-cart').on('click',function (){
-        const idM = $(this).closest('tr').attr('id').replace('cd_','');
-        if ($('#quantityC').val() === '0') {
+
+page.commands.handleClickCart = () => {
+
+    page.commands.onClickButtonPlusAndMinus($('.btn-plus-cart'), 'plus');
+
+    page.commands.onClickButtonPlusAndMinus($('.btn-minus-cart'), 'minus');
+
+}
+page.commands.onClickButtonPlusAndMinus = function (btn, type) {
+    btn.on('click', async function () {
+
+        const idCart = $(this).closest('tr').attr('id').replace('cd_', '');
+
+        const quantity = $('#quantityC' + idCart);
+
+        console.log(quantity.val())
+
+
+        let newQuantity = 0;
+        if (type === 'plus') {
+            newQuantity = (parseFloat(quantity.val()) + 1);
+        }
+        if (type === 'minus') {
+            newQuantity = (parseFloat(quantity.val()) - 1);
+        }
+        if (newQuantity < 1) {
+            $(this).prop('hide', false);
             return;
         }
-        $('#quantityC').val(parseFloat($('#quantityC').val())-1);
+        if (newQuantity > 50) {
+            $(this).prop('disabled', false);
+            return;
+        }
+
+        $('#quantityC' + idCart).val(newQuantity);
+
+
+        await page.commands.changeTotalAmount(newQuantity, idCart);
+
+        onChangeQuantity(newQuantity, idCart);
+    })
+}
+
+//ham chung
+
+function onChangeQuantity(quantity, cartDetailId) {
+
+    $('#quantityC' + cartDetailId).val(quantity);
+
+    // find id total cua product
+    const pricePro = parseFloat($('#pricePro_' + cartDetailId).text());
+
+    const newTotal = pricePro * quantity;
+
+    $('#totalAmountPro_' + cartDetailId).text(newTotal + 'đ');
+    // doi value
+    page.commands.amountProsOnCart();
+}
+
+
+page.commands.changeTotalAmount = async (quantity, idCartDetail) => {
+    const data = {
+        quantity: quantity
+    }
+    await $.ajax({
+        url: page.url.changeQuantityProOnCart + idCartDetail,
+        data: JSON.stringify(data),
+        method: "PATCH",
+        contentType: "application/json",
+        error: function (xhr) {
+            const response = JSON.parse(xhr.responseText);
+
+            response.forEach(error => {
+                $('.error_' + idCartDetail).text(error.message);
+            });
+
+            $('.hidden-span').css('display', 'inline');
+        }
 
     });
-}
-page.commands.changeTotalAmount= async (idCartDetail) => {
-    // const newTotal = await $.ajax({
-    //     url:
-    // })
 }
 
 
 // Modal product detail
-page.commands.handleClickButtonSearch = (productID) => {
-    $.ajax({
-        url: page.url.getProductById + productID,
-    })
-        .done(async (data) => {
-            console.log(data)
-            page.elements.nameProduct.text(data.productName)
-            // page.elements.viewProduct
-            page.elements.priceProduct.text(data.productPrice + "$")
-            page.elements.totalAmount.text(data.productPrice + "$")
-            page.elements.descriptionProduct.text(data.description)
-            page.elements.imageProduct.attr('src',  data.poster.url)
-            page.elements.amountIn.val(1);
-            page.elements.idProduct.val(data.id)
-
-            page.elements.modalProductDetail.modal('show');
-        })
-}
 
 // Modal cart detail
 page.elements.btnOpenCart.on('click', async () => {
@@ -467,15 +466,16 @@ page.elements.btnOpenCart.on('click', async () => {
 })
 
 page.commands.amountProsOnCart = () => {
+
     let amount = 0;
 
     $('.totalAmountProduct').each(function () {
-        amount += parseFloat($(this).text().replace('$', ''));
+        amount += parseFloat($(this).text().replace('đ', ''));
     });
 
-    $('#subtotal').text(amount + "$");
+    $('#subtotal').text(amount + "đ");
 
-    $('#total').text(amount + "$");
+    $('#total').text(amount + "đ");
 
 }
 //Render Customer to page checkout
@@ -499,7 +499,7 @@ page.commands.renderCustomerToPageCheckOut = async () => {
 
 //render checkout
 page.commands.renderCartToBillCheckout = async () => {
-    page.elements.renderCartOnCheckout.empty();
+    $('.renderCarts').empty();
 
     const listCart = await $.ajax({
         url: page.url.getAllCartList,
@@ -512,18 +512,18 @@ page.commands.renderCartToBillCheckout = async () => {
     listCart.forEach(item => {
         str = page.commands.renderCartToBill(item);
 
-        page.elements.renderCartOnCheckout.prepend(str)
+        $('.renderCarts').prepend(str)
 
         amount += item.totalAmount;
 
     });
     str = '<h6 class="mb-3">Products</h6>';
 
-    page.elements.renderCartOnCheckout.prepend(str);
+    $('.renderCarts').prepend(str);
 
-    $('#subtotalCheckout').text(amount + "$");
+    $('#subtotalCheckout').text(amount + "đ");
 
-    $('#totalCheckout').text(amount + "$");
+    $('#totalCheckout').text(amount + "đ");
 
 }
 
@@ -587,7 +587,7 @@ page.commands.deleteProFromCart = async (cartDetailID) => {
 //bill
 
 page.elements.btnBill.on('click', async () => {
-    if (page.elements.checkBill.val() === 'true') {
+    if ($('#check').val() === 'true') {
         await page.commands.createBill();
     } else {
         AppUtils.showError("Bạn chưa xác nhận tại giỏ hàng!")
@@ -623,9 +623,9 @@ page.elements.btnAddProductToCart.on('click', async () => {
 
     const name = page.elements.nameProduct.text();
 
-    const price = page.elements.priceProduct.text().replace('$', '');
+    const price = page.elements.priceProduct.text().replace('đ', '');
 
-    const totalAmount = parseFloat(page.elements.totalAmount.text().replace('$', ''));
+    const totalAmount = parseFloat(page.elements.totalAmount.text().replace('', ''));
 
     const amountIn = parseFloat(page.elements.amountIn.val());
 
@@ -662,15 +662,6 @@ page.commands.countCartDetailByCustomerID = async () => {
     const count = await $.ajax({
         url: page.url.countCartDetails
     })
-    page.elements.countCartDetails.text(count);
+    $('#show-count-cart-detail').text(count);
 }
 
-$(async () => {
-    await page.commands.getAllProduct();
-    await page.commands.handleClick();
-    await page.commands.countCartDetailByCustomerID();
-    await page.commands.renderCustomerToPageCheckOut();
-    if (page.elements.checkBill.val() === 'true') {
-        await page.commands.renderCartToBillCheckout();
-    }
-})
